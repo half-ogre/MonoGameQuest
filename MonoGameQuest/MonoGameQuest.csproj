@@ -58,6 +58,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\3rdParty\Tao.Sdl.dll</HintPath>
     </Reference>
+    <Reference Include="TiledSharp, Version=1.0.5009.910, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\3rdParty\TiledSharp.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\3rdParty\SDL.dll">
