@@ -4,13 +4,13 @@ using Microsoft.Xna.Framework.Input;
 
 namespace MonoGameQuest
 {
-    public class Game1 : Game
+    public class Game : Microsoft.Xna.Framework.Game
     {
         readonly GraphicsDeviceManager _graphics;
         Map _map;
         SpriteBatch _spriteBatch;
 
-        public Game1()
+        public Game()
         {
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = @"Content";

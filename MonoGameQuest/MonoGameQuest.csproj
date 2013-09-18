@@ -35,7 +35,7 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Game1.cs" />
+    <Compile Include="Game.cs" />
     <Compile Include="Map.cs">
       <SubType>Code</SubType>
     </Compile>
