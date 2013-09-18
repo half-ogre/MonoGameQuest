@@ -70,7 +70,7 @@ namespace MonoGameQuest
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            // TODO: Add your update logic here
+            _map.Update(_graphics);
 
             base.Update(gameTime);
         }

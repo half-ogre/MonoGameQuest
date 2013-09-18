@@ -9,21 +9,25 @@ namespace MonoGameQuest
 {
     public class Map
     {
-        readonly int _columns;
         readonly Dictionary<Vector2, List<int>> _terrain;
-        readonly TmxMap _tiledMap;
         readonly Texture2D _tileSheet;
+        readonly int _tilesheetColumns;
+        readonly TmxMap _tmxMap;
+        int _screenColumns = 0;
+        int _screenHeight = 0;
+        int _screenRows = 0;
+        int _screenWidth = 0;
 
         public Map(ContentManager contentManager)
         {
-            _tiledMap = new TmxMap(@"Content\map\map.tmx");
             _tileSheet = contentManager.Load<Texture2D>(@"images\1\tilesheet");
+            _tmxMap = new TmxMap(@"Content\map\map.tmx");
 
-            _columns = _tileSheet.Width / _tiledMap.TileWidth;
+            _tilesheetColumns = _tileSheet.Width / _tmxMap.TileWidth;
 
             _terrain = new Dictionary<Vector2, List<int>>();
             
-            foreach (var layer in _tiledMap.Layers)
+            foreach (var layer in _tmxMap.Layers)
             {
                 if (!layer.Visible || layer.Name.Equals("entities", StringComparison.OrdinalIgnoreCase))
                     continue;
@@ -45,22 +49,17 @@ namespace MonoGameQuest
 
         public void Draw(SpriteBatch spriteBatch)
         {
-            spriteBatch.GraphicsDevice.Clear(new Color(
-                r: _tiledMap.BackgroundColor.R,
-                g: _tiledMap.BackgroundColor.G,
-                b: _tiledMap.BackgroundColor.R));
+            if (_screenRows == 0 || _screenColumns == 0)
+                return; // the map hasn't been updated even once, and so can't be drawn
             
-            var columns = spriteBatch.GraphicsDevice.PresentationParameters.BackBufferWidth / _tiledMap.TileWidth;
-            if (spriteBatch.GraphicsDevice.PresentationParameters.BackBufferWidth % _tiledMap.TileWidth > 0)
-                columns++;
+            spriteBatch.GraphicsDevice.Clear(new Color(
+                r: _tmxMap.BackgroundColor.R,
+                g: _tmxMap.BackgroundColor.G,
+                b: _tmxMap.BackgroundColor.R));
 
-            var rows = spriteBatch.GraphicsDevice.PresentationParameters.BackBufferHeight / _tiledMap.TileHeight;
-            if (spriteBatch.GraphicsDevice.PresentationParameters.BackBufferHeight % _tiledMap.TileHeight > 0)
-                columns++;
-
-            for (var x = 0; x < columns; x++)
+            for (var x = 0; x < _screenColumns; x++)
             {
-                for (var y = 0; y < rows; y++)
+                for (var y = 0; y < _screenRows; y++)
                 {
                     var position = new Vector2(x, y);
                     List<int> tileIndices;
@@ -69,7 +68,7 @@ namespace MonoGameQuest
                         foreach (var tileIndex in tileIndices)
                             spriteBatch.Draw(
                                 texture: _tileSheet,
-                                position: new Vector2(x * _tiledMap.TileWidth, y *_tiledMap.TileHeight),
+                                position: new Vector2(x * _tmxMap.TileWidth, y *_tmxMap.TileHeight),
                                 sourceRectangle: GetSourceRectangleForTileIndex(tileIndex),
                                 color: Color.White /* tint */);
                     }
@@ -79,21 +78,41 @@ namespace MonoGameQuest
 
         private Rectangle GetSourceRectangleForTileIndex(int index)
         {
-            int row = 1;
-            int column;
+            int tilesheetRow = 1;
+            int tilesheetColumn;
 
-            while (index > _columns)
+            while (index > _tilesheetColumns)
             {
-                index -= _columns;
-                row++;
+                index -= _tilesheetColumns;
+                tilesheetRow++;
             }
-            column = index;
+
+            tilesheetColumn = index;
 
             return new Rectangle(
-                x: (column - 1) * _tiledMap.TileWidth,
-                y: (row - 1) * _tiledMap.TileHeight,
-                width: _tiledMap.TileWidth,
-                height: _tiledMap.TileHeight);
+                x: (tilesheetColumn - 1) * _tmxMap.TileWidth,
+                y: (tilesheetRow - 1) * _tmxMap.TileHeight,
+                width: _tmxMap.TileWidth,
+                height: _tmxMap.TileHeight);
+        }
+
+        public void Update(GraphicsDeviceManager graphics)
+        {
+            if (_screenWidth != graphics.GraphicsDevice.PresentationParameters.BackBufferWidth)
+            {
+                _screenWidth = graphics.GraphicsDevice.PresentationParameters.BackBufferWidth;
+                _screenColumns = _screenWidth / _tmxMap.TileWidth;
+                if (_screenWidth % _tmxMap.TileWidth > 0)
+                    _screenColumns++;
+            }
+
+            if (_screenHeight != graphics.GraphicsDevice.PresentationParameters.BackBufferHeight)
+            {
+                _screenHeight = graphics.GraphicsDevice.PresentationParameters.BackBufferHeight;
+                _screenRows = _screenHeight / _tmxMap.TileHeight;
+                if (_screenHeight % _tmxMap.TileHeight > 0)
+                    _screenRows++;
+            }
         }
     }
 }
