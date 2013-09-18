@@ -1,8 +1,11 @@
 ﻿#region Using Statements
 
+using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using OpenTK.Graphics.OpenGL;
+using TiledSharp;
 
 #endregion
 
@@ -14,12 +17,13 @@ namespace MonoGameQuest
     public class Game1 : Game
     {
         GraphicsDeviceManager _graphics;
+        Map _map;
         SpriteBatch _spriteBatch;
 
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
-            Content.RootDirectory = "Content";
+            Content.RootDirectory = @"Content";
         }
 
         /// <summary>
@@ -44,7 +48,7 @@ namespace MonoGameQuest
             // Create a new SpriteBatch, which can be used to draw textures.
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            // TODO: use this.Content to load your game content here
+            _map = new Map(Content);
         }
 
         /// <summary>
@@ -77,9 +81,11 @@ namespace MonoGameQuest
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
 
-            // TODO: Add your drawing code here
+            _map.Draw(_spriteBatch);
+
+            _spriteBatch.End();
 
             base.Draw(gameTime);
         }
