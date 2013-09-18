@@ -8,6 +8,7 @@ namespace MonoGameQuest
     {
         readonly GraphicsDeviceManager _graphics;
         Map _map;
+        PlayerCharacter _pc;
         SpriteBatch _spriteBatch;
 
         public Game()
@@ -22,6 +23,7 @@ namespace MonoGameQuest
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             _map = new Map(Content);
+            _pc = new PlayerCharacter(Content, new Vector2(0, 0));
         }
 
         protected override void Update(GameTime gameTime)
@@ -30,6 +32,7 @@ namespace MonoGameQuest
                 Exit();
 
             _map.Update(_graphics);
+            _pc.Update(gameTime);
 
             base.Update(gameTime);
         }
@@ -39,6 +42,7 @@ namespace MonoGameQuest
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
 
             _map.Draw(_spriteBatch);
+            _pc.Draw(_spriteBatch, _map.TileHeight, _map.TileWidth);
 
             _spriteBatch.End();
 
