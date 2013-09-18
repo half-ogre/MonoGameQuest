@@ -1,12 +1,9 @@
 ﻿#region Using Statements
-using System;
-using System.Collections.Generic;
+
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Storage;
-using Microsoft.Xna.Framework.GamerServices;
+
 #endregion
 
 namespace MonoGameQuest
@@ -16,13 +13,12 @@ namespace MonoGameQuest
     /// </summary>
     public class Game1 : Game
     {
-        GraphicsDeviceManager graphics;
-        SpriteBatch spriteBatch;
+        GraphicsDeviceManager _graphics;
+        SpriteBatch _spriteBatch;
 
         public Game1()
-            : base()
         {
-            graphics = new GraphicsDeviceManager(this);
+            _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
         }
 
@@ -46,7 +42,7 @@ namespace MonoGameQuest
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
-            spriteBatch = new SpriteBatch(GraphicsDevice);
+            _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
         }
