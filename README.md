@@ -1,0 +1,1 @@
+This will eventually be a [MonoGame](http://www.monogame.net/) port of [BrowserQuest](http://browserquest.mozilla.org/). Right now, it's not much of anything.
