@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -23,8 +24,9 @@ namespace MonoGameQuest
             _tileSheet = contentManager.Load<Texture2D>(@"images\1\tilesheet");
             _tmxMap = new TmxMap(@"Content\map\map.tmx");
 
+            TileHeight = _tmxMap.TileHeight;
             _tilesheetColumns = _tileSheet.Width / _tmxMap.TileWidth;
-
+            TileWidth = _tmxMap.TileWidth;
             _terrain = new Dictionary<Vector2, List<int>>();
             
             foreach (var layer in _tmxMap.Layers)
@@ -95,6 +97,10 @@ namespace MonoGameQuest
                 width: _tmxMap.TileWidth,
                 height: _tmxMap.TileHeight);
         }
+
+        public int TileHeight { get; private set; }
+        
+        public int TileWidth { get; private set; }
 
         public void Update(GraphicsDeviceManager graphics)
         {
