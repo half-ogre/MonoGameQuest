@@ -24,7 +24,7 @@ namespace MonoGameQuest
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             _map = new Map(Content);
-            _pc = new PlayerCharacter(Content, new Vector2(0, 0));
+            _pc = new PlayerCharacter(Content, new Vector2(0, 0), _map);
         }
 
         void SetScale(PresentationParameters presentationParameters)
@@ -46,7 +46,10 @@ namespace MonoGameQuest
             {
                 GameTime = gameTime,
                 Graphics = _graphics,
-                Scale = _scale
+                KeyboardState = Keyboard.GetState(),
+                MapScale = _scale,
+                MapTileHeight = _map.TileHeight,
+                MapTileWidth = _map.TileWidth
             };
 
             _map.Update(context);

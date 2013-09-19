@@ -121,10 +121,14 @@ namespace MonoGameQuest
             _tilesheetColumns = _tileSheet.Width / _scaledTileWidth;
         }
 
+        public int TileHeight { get { return _scaledTileHeight; } }
+
+        public int TileWidth { get { return _scaledTileWidth; } }
+
         public void Update(UpdateContext context)
         {
-            if (context.Scale != _scale)
-                SetScale(context.Scale);
+            if (context.MapScale != _scale)
+                SetScale(context.MapScale);
 
             if (_screenWidth != context.Graphics.GraphicsDevice.PresentationParameters.BackBufferWidth)
             {
