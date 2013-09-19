@@ -156,7 +156,16 @@ namespace MonoGameQuest.Sprites
             _movementTimeAtCurrentPosition = 0;
             _movement.Clear();
 
-            _orientation = direction;
+            if (_orientation != direction)
+            {
+                _orientation = direction;
+
+                if (_isWalking)
+                {
+                    // start a new walk animation for the new orientation
+                    Walk();
+                }
+            }
 
             var offsetX = 0;
             var offsetY = 0;
