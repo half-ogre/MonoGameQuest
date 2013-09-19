@@ -22,7 +22,7 @@ namespace MonoGameQuest.Sprites
             idleDownAnimation: new Animation(row: 8, length: 2),
             idleRightAnimation: new Animation(row: 2, length: 2),
             walkAnimationSpeed: Animation.DefaultWalkSpeed,
-            walkUpAnimation: new Animation(row: 5, length: 4),
+            walkUpAnimation: new Animation(row: 4, length: 4),
             walkDownAnimation: new Animation(row: 7, length: 4),
             walkRightAnimation: new Animation(row: 1, length: 4))
         {
