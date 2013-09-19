@@ -22,19 +22,16 @@ namespace MonoGameQuest
             _sprite = new ClothArmor(contentManager, new Vector2(0, 0));
         }
 
-        public void Draw(
-            SpriteBatch spriteBatch,
-            int mapTileHeight,
-            int mapTileWidth)
+        public void Draw(SpriteBatch spriteBatch)
         {
             _sprite.Draw(spriteBatch);
         }
 
         public Vector2 Position { get; set; }
 
-        public void Update(GameTime gameTime)
+        public void Update(UpdateContext context)
         {
-            _sprite.Update(gameTime);
+            _sprite.Update(context);
         }
     }
 }

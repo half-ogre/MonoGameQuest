@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
 namespace MonoGameQuest.Sprites
@@ -10,16 +11,24 @@ namespace MonoGameQuest.Sprites
         readonly Stack<Action<SpriteBatch>> _animation;
         int _animationSpeed;
         int _animationTimeAtCurrentFrame;
+        private readonly ContentManager _contentManager;
         private readonly int _height;
+        private readonly Animation _idleDownAnimation;
         private readonly int _offsetX;
         private readonly int _offsetY;
         private readonly Vector2 _position;
-        private readonly Animation _idleDownAnimation;
-        private readonly Texture2D _spritesheet;
+        int _scale = 1;
+        int _scaledHeight;
+        int _scaledOffsetX;
+        int _scaledOffsetY;
+        int _scaledWidth;
+        private Texture2D _spritesheet;
+        readonly string _spritesheetName;
         private readonly int _width;
 
         protected PlayerCharacterSprite(
-            Texture2D spritesheet,
+            ContentManager contentManager,
+            string spritesheetName,
             int height,
             int width,
             int offsetX,
@@ -27,14 +36,16 @@ namespace MonoGameQuest.Sprites
             Vector2 position,
             Animation idleDownAnimation)
         {
-            _spritesheet = spritesheet;
-            _height = height;
-            _width = width;
-            _offsetX = offsetX;
-            _offsetY = offsetY;
+            _contentManager = contentManager;
+            _spritesheetName = spritesheetName;
+            _height = _scaledHeight = height;
+            _width = _scaledWidth = width;
+            _offsetX = _scaledOffsetX = offsetX;
+            _offsetY = _scaledOffsetY = offsetY;
             _position = position;
             _idleDownAnimation = idleDownAnimation;
 
+            _spritesheet = _contentManager.Load<Texture2D>(string.Concat(@"images\1\", _spritesheetName));
             _animation = new Stack<Action<SpriteBatch>>();
         }
 
@@ -63,23 +74,39 @@ namespace MonoGameQuest.Sprites
                 _animation.Push(spriteBatch =>
                 {
                     var sourceRectangle = new Rectangle(
-                        index * _width,
-                        _idleDownAnimation.Row * _height,
-                        _width,
-                        _height);
+                        index * _scaledWidth,
+                        _idleDownAnimation.Row * _scaledHeight,
+                        _scaledWidth,
+                        _scaledHeight);
 
                     var offsetPosition = new Vector2(
-                        _position.X + _offsetX,
-                        _position.Y + _offsetY);
+                        _position.X + _scaledOffsetX,
+                        _position.Y + _scaledOffsetY);
 
                     spriteBatch.Draw(_spritesheet, offsetPosition, sourceRectangle, Color.White);
                 });
             }
         }
-        
-        public void Update(GameTime gameTime)
+
+        void SetScale(int scale)
         {
-            _animationTimeAtCurrentFrame += gameTime.ElapsedGameTime.Milliseconds;
+            _scale = scale;
+
+            _spritesheet = _contentManager.Load<Texture2D>(string.Concat(@"images\", _scale, @"\", _spritesheetName));
+            
+            _scaledHeight = _height * _scale;
+            _scaledWidth = _width * _scale;
+            
+            _scaledOffsetX = _offsetX * _scale;
+            _scaledOffsetY = _offsetY * _scale;
+        }
+        
+        public void Update(UpdateContext context)
+        {
+            if (context.Scale != _scale)
+                SetScale(context.Scale);
+
+            _animationTimeAtCurrentFrame += context.GameTime.ElapsedGameTime.Milliseconds;
 
             if (_animation.Count < 1)
                 Idle();

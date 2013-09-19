@@ -9,6 +9,7 @@ namespace MonoGameQuest
         readonly GraphicsDeviceManager _graphics;
         Map _map;
         PlayerCharacter _pc;
+        int _scale = 1;
         SpriteBatch _spriteBatch;
 
         public Game()
@@ -26,13 +27,30 @@ namespace MonoGameQuest
             _pc = new PlayerCharacter(Content, new Vector2(0, 0));
         }
 
+        void SetScale(PresentationParameters presentationParameters)
+        {
+            if (presentationParameters .BackBufferWidth <= 1500 || presentationParameters.BackBufferHeight <= 870)
+                _scale = 2;
+            else
+                _scale = 3;
+        }
+
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            _map.Update(_graphics);
-            _pc.Update(gameTime);
+            SetScale(_graphics.GraphicsDevice.PresentationParameters);
+
+            var context = new UpdateContext
+            {
+                GameTime = gameTime,
+                Graphics = _graphics,
+                Scale = _scale
+            };
+
+            _map.Update(context);
+            _pc.Update(context);
 
             base.Update(gameTime);
         }
@@ -42,7 +60,7 @@ namespace MonoGameQuest
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
 
             _map.Draw(_spriteBatch);
-            _pc.Draw(_spriteBatch, _map.TileHeight, _map.TileWidth);
+            _pc.Draw(_spriteBatch);
 
             _spriteBatch.End();
 

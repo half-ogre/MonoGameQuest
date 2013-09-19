@@ -1,13 +1,13 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
-using Microsoft.Xna.Framework.Graphics;
 
 namespace MonoGameQuest.Sprites
 {
     public class ClothArmor : PlayerCharacterSprite
     {
         public ClothArmor(ContentManager contentManager, Vector2 position) : base(
-            spritesheet: contentManager.Load<Texture2D>("images/1/clotharmor"), 
+            contentManager: contentManager,
+            spritesheetName: "clotharmor", 
             height: 32, 
             width: 32, 
             offsetX: -8, 

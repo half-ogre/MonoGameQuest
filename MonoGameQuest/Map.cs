@@ -10,10 +10,16 @@ namespace MonoGameQuest
 {
     public class Map
     {
+        readonly ContentManager _contentManager;
         readonly Dictionary<Vector2, List<int>> _terrain;
-        readonly Texture2D _tileSheet;
-        readonly int _tilesheetColumns;
+        readonly int _tileHeight;
+        Texture2D _tileSheet;
+        readonly int _tileWidth;
+        int _tilesheetColumns;
         readonly TmxMap _tmxMap;
+        int _scale = 1;
+        int _scaledTileHeight;
+        int _scaledTileWidth;
         int _screenColumns = 0;
         int _screenHeight = 0;
         int _screenRows = 0;
@@ -21,12 +27,17 @@ namespace MonoGameQuest
 
         public Map(ContentManager contentManager)
         {
+            _contentManager = contentManager;
+
             _tileSheet = contentManager.Load<Texture2D>(@"images\1\tilesheet");
+            
             _tmxMap = new TmxMap(@"Content\map\map.tmx");
 
-            TileHeight = _tmxMap.TileHeight;
-            _tilesheetColumns = _tileSheet.Width / _tmxMap.TileWidth;
-            TileWidth = _tmxMap.TileWidth;
+            _tileHeight = _scaledTileHeight = _tmxMap.TileHeight;
+            _tileWidth = _scaledTileWidth = _tmxMap.TileWidth;
+            
+            _tilesheetColumns = _tileSheet.Width / _scaledTileWidth;
+            
             _terrain = new Dictionary<Vector2, List<int>>();
             
             foreach (var layer in _tmxMap.Layers)
@@ -70,7 +81,7 @@ namespace MonoGameQuest
                         foreach (var tileIndex in tileIndices)
                             spriteBatch.Draw(
                                 texture: _tileSheet,
-                                position: new Vector2(x * _tmxMap.TileWidth, y *_tmxMap.TileHeight),
+                                position: new Vector2(x * _scaledTileWidth, y * _scaledTileHeight),
                                 sourceRectangle: GetSourceRectangleForTileIndex(tileIndex),
                                 color: Color.White /* tint */);
                     }
@@ -92,31 +103,42 @@ namespace MonoGameQuest
             tilesheetColumn = index;
 
             return new Rectangle(
-                x: (tilesheetColumn - 1) * _tmxMap.TileWidth,
-                y: (tilesheetRow - 1) * _tmxMap.TileHeight,
-                width: _tmxMap.TileWidth,
-                height: _tmxMap.TileHeight);
+                x: (tilesheetColumn - 1) * _scaledTileWidth,
+                y: (tilesheetRow - 1) * _scaledTileHeight,
+                width: _scaledTileWidth,
+                height: _scaledTileHeight);
         }
 
-        public int TileHeight { get; private set; }
-        
-        public int TileWidth { get; private set; }
-
-        public void Update(GraphicsDeviceManager graphics)
+        void SetScale(int scale)
         {
-            if (_screenWidth != graphics.GraphicsDevice.PresentationParameters.BackBufferWidth)
+            _scale = scale;
+
+            _tileSheet = _contentManager.Load<Texture2D>(string.Concat(@"images\", _scale, @"\tilesheet"));
+
+            _scaledTileHeight = _tileHeight * _scale;
+            _scaledTileWidth = _tileWidth * _scale;
+
+            _tilesheetColumns = _tileSheet.Width / _scaledTileWidth;
+        }
+
+        public void Update(UpdateContext context)
+        {
+            if (context.Scale != _scale)
+                SetScale(context.Scale);
+
+            if (_screenWidth != context.Graphics.GraphicsDevice.PresentationParameters.BackBufferWidth)
             {
-                _screenWidth = graphics.GraphicsDevice.PresentationParameters.BackBufferWidth;
-                _screenColumns = _screenWidth / _tmxMap.TileWidth;
-                if (_screenWidth % _tmxMap.TileWidth > 0)
+                _screenWidth = context.Graphics.GraphicsDevice.PresentationParameters.BackBufferWidth;
+                _screenColumns = _screenWidth / _scaledTileWidth;
+                if (_screenWidth % _scaledTileWidth > 0)
                     _screenColumns++;
             }
 
-            if (_screenHeight != graphics.GraphicsDevice.PresentationParameters.BackBufferHeight)
+            if (_screenHeight != context.Graphics.GraphicsDevice.PresentationParameters.BackBufferHeight)
             {
-                _screenHeight = graphics.GraphicsDevice.PresentationParameters.BackBufferHeight;
-                _screenRows = _screenHeight / _tmxMap.TileHeight;
-                if (_screenHeight % _tmxMap.TileHeight > 0)
+                _screenHeight = context.Graphics.GraphicsDevice.PresentationParameters.BackBufferHeight;
+                _screenRows = _screenHeight / _scaledTileHeight;
+                if (_screenHeight % _scaledTileHeight > 0)
                     _screenRows++;
             }
         }
