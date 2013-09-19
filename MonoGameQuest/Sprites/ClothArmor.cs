@@ -3,7 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace MonoGameQuest.Sprites
 {
-    public class ClothArmor : Sprite
+    public class ClothArmor : PlayerCharacterSprite
     {
         public ClothArmor(ContentManager contentManager)
             : base(contentManager.Load<Texture2D>("images/1/clotharmor"), 32, 32, -8, -12)

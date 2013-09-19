@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace MonoGameQuest
+namespace MonoGameQuest.Sprites
 {
-    public abstract class Sprite
+    public abstract class PlayerCharacterSprite
     {
         readonly IDictionary<AnimationIdentifier, Animation> _animations;
         Animation _currentAnimation;
@@ -17,7 +17,7 @@ namespace MonoGameQuest
         private readonly Texture2D _spritesheet;
         private readonly int _width;
 
-        protected Sprite(
+        protected PlayerCharacterSprite(
             Texture2D spritesheet,
             int height,
             int width,

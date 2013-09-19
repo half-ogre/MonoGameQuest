@@ -8,7 +8,7 @@ namespace MonoGameQuest
 {
     public class PlayerCharacter
     {
-        readonly Sprite _sprite;
+        readonly PlayerCharacterSprite _sprite;
 
         public PlayerCharacter(
             ContentManager contentManager,
