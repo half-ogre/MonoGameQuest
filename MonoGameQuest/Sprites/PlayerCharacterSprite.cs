@@ -7,13 +7,14 @@ namespace MonoGameQuest.Sprites
 {
     public abstract class PlayerCharacterSprite
     {
-        readonly IDictionary<AnimationIdentifier, Animation> _animations;
-        Animation _currentAnimation;
-        int _currentAnimationIndex;
-        int _currentAnimationTimeAtIndex;
+        readonly Stack<Action<SpriteBatch>> _animation;
+        int _animationSpeed;
+        int _animationTimeAtCurrentFrame;
         private readonly int _height;
         private readonly int _offsetX;
         private readonly int _offsetY;
+        private readonly Vector2 _position;
+        private readonly Animation _idleDownAnimation;
         private readonly Texture2D _spritesheet;
         private readonly int _width;
 
@@ -22,84 +23,66 @@ namespace MonoGameQuest.Sprites
             int height,
             int width,
             int offsetX,
-            int offsetY)
+            int offsetY,
+            Vector2 position,
+            Animation idleDownAnimation)
         {
             _spritesheet = spritesheet;
             _height = height;
             _width = width;
             _offsetX = offsetX;
             _offsetY = offsetY;
+            _position = position;
+            _idleDownAnimation = idleDownAnimation;
 
-            _animations = new Dictionary<AnimationIdentifier, Animation>();
+            _animation = new Stack<Action<SpriteBatch>>();
         }
 
-        protected void AddAnimation(Animation animation)
+        public void Draw(SpriteBatch spriteBatch)
         {
-            if (animation == null)
-                throw new ArgumentNullException("animation");
-
-            if (animation.AnimationId == AnimationIdentifier.None)
-                throw new ArgumentException("Animation does not have an identifier.", "animation");
-
-            if (_animations.ContainsKey(animation.AnimationId))
-                throw new ArgumentException("An animation with that identifier has already been added.", "animation");
-
-            _animations.Add(animation.AnimationId, animation);
-        }
-
-        public void Draw(
-            SpriteBatch spriteBatch,
-            Vector2 position,
-            int tileHeight,
-            int tileWidth)
-        {
-            if (_currentAnimation == null)
-                return;
-
-            var sourceRectangle = new Rectangle(
-                _currentAnimationIndex * _width,
-                _currentAnimation.Row * _height,
-                _width,
-                _height);
-
-            var computedPosition = new Vector2(
-                (position.X * tileWidth) + _offsetX,
-                (position.Y * tileHeight) + _offsetY);
-
-            spriteBatch.Draw(_spritesheet, computedPosition, sourceRectangle, Color.White);
-        }
-
-        protected void ResetAnimation()
-        {
-            _currentAnimationIndex = 0;
-            _currentAnimationTimeAtIndex = 0;
-        }
-
-        public void SetAnimation(AnimationIdentifier animationId)
-        {
-            if (animationId == AnimationIdentifier.None)
-                _currentAnimation = null;
-            else if (!_animations.ContainsKey(animationId))
-                throw new ArgumentException("Sprite does not have the specified animation.", "animationId");
+            if (_animationTimeAtCurrentFrame > _animationSpeed)
+            {
+                _animationTimeAtCurrentFrame = 0;
+                _animation.Pop()(spriteBatch);
+            }
             else
-                _currentAnimation = _animations[animationId];
-
-            ResetAnimation();
+            {
+                _animation.Peek()(spriteBatch);
+            }
         }
 
+        public void Idle()
+        {
+            _animation.Clear();
+
+            _animationSpeed = _idleDownAnimation.Speed;
+
+            for (var n = _idleDownAnimation.Length - 1; n >= 0; n--)
+            {
+                var index = n;
+                _animation.Push(spriteBatch =>
+                {
+                    var sourceRectangle = new Rectangle(
+                        index * _width,
+                        _idleDownAnimation.Row * _height,
+                        _width,
+                        _height);
+
+                    var offsetPosition = new Vector2(
+                        _position.X + _offsetX,
+                        _position.Y + _offsetY);
+
+                    spriteBatch.Draw(_spritesheet, offsetPosition, sourceRectangle, Color.White);
+                });
+            }
+        }
+        
         public void Update(GameTime gameTime)
         {
-            if (_currentAnimation == null)
-                return;
+            _animationTimeAtCurrentFrame += gameTime.ElapsedGameTime.Milliseconds;
 
-            _currentAnimationTimeAtIndex += gameTime.ElapsedGameTime.Milliseconds;
-            if (_currentAnimationTimeAtIndex > _currentAnimation.Speed)
-            {
-                _currentAnimationTimeAtIndex = 0;
-                _currentAnimationIndex++;
-                if (!(_currentAnimationIndex < _currentAnimation.Length))
-                    _currentAnimationIndex = 0;
-            }
+            if (_animation.Count < 1)
+                Idle();
         }
     }
 }

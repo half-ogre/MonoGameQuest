@@ -19,8 +19,7 @@ namespace MonoGameQuest
 
             Position = position;
             
-            _sprite = new ClothArmor(contentManager);
-            _sprite.SetAnimation(AnimationIdentifier.IdleDown);
+            _sprite = new ClothArmor(contentManager, new Vector2(0, 0));
         }
 
         public void Draw(
@@ -28,7 +27,7 @@ namespace MonoGameQuest
             int mapTileHeight,
             int mapTileWidth)
         {
-            _sprite.Draw(spriteBatch, Position, mapTileWidth, mapTileWidth);
+            _sprite.Draw(spriteBatch);
         }
 
         public Vector2 Position { get; set; }
