@@ -36,7 +36,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Animation.cs" />
-    <Compile Include="AnimationIdentifier.cs" />
     <Compile Include="Game.cs" />
     <Compile Include="Map.cs">
       <SubType>Code</SubType>

@@ -13,7 +13,7 @@ namespace MonoGameQuest.Sprites
             offsetX: -8, 
             offsetY: -12, 
             position: position, 
-            idleDownAnimation: new Animation(AnimationIdentifier.IdleDown, 8, 2, Animation.DefaultIdleSpeed))
+            idleDownAnimation: new Animation(row: 8, length: 2, speed: Animation.DefaultIdleSpeed))
         {
         }
     }
