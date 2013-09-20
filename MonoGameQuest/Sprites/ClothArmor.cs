@@ -5,76 +5,83 @@ namespace MonoGameQuest.Sprites
 {
     public class ClothArmor : PlayerCharacterSprite
     {
-        public ClothArmor(ContentManager contentManager, Vector2 mapPosition, Map map) : base(
+        public ClothArmor(ContentManager contentManager, Vector2 position, Map map) : base(
             contentManager: contentManager,
-            spritesheetName: "clotharmor", 
+            spriteSheetName: "clotharmor", 
             height: 32, 
             width: 32, 
             offsetX: -8, 
             offsetY: -12, 
-            mapPosition: mapPosition, 
-            mapTileHeight: map.TileHeight,
-            mapTileWidth: map.TileWidth,
-            movementLength: Animation.DefaultMoveLength,
-            movementSpeed: Animation.DefaultMoveSpeed)
+            position: position, 
+            map: map,
+            movementLength: Constants.DefaultMoveLength,
+            movementSpeed: Constants.DefaultMoveSpeed)
         {
             AddAnimation(new Animation(
+                sprite: this,
                 type: AnimationType.Idle,
                 direction: Direction.Up,
                 row: 5, 
                 length: 2, 
-                speed: Animation.DefaultIdleSpeed));
+                speed: Constants.DefaultIdleSpeed));
 
             AddAnimation(new Animation(
+                sprite: this,
                 type: AnimationType.Idle,
                 direction: Direction.Down,
                 row: 8, 
                 length: 2, 
-                speed: Animation.DefaultIdleSpeed));
+                speed: Constants.DefaultIdleSpeed));
 
             AddAnimation(new Animation(
+                sprite: this,
                 type: AnimationType.Idle,
                 direction: Direction.Left,
                 row: 2, 
                 length: 2, 
-                speed: Animation.DefaultIdleSpeed,
+                speed: Constants.DefaultIdleSpeed,
                 flipHorizontally: true));
 
             AddAnimation(new Animation(
+                sprite: this,
                 type: AnimationType.Idle,
                 direction: Direction.Right,
                 row: 2, 
                 length: 2, 
-                speed: Animation.DefaultIdleSpeed));
+                speed: Constants.DefaultIdleSpeed));
 
             AddAnimation(new Animation(
+                sprite: this,
                 type: AnimationType.Walk,
                 direction: Direction.Up,
                 row: 4, 
                 length: 4, 
-                speed: Animation.DefaultWalkSpeed));
+                speed: Constants.DefaultWalkSpeed));
 
             AddAnimation(new Animation(
+                sprite: this,
                 type: AnimationType.Walk,
                 direction: Direction.Down,
                 row: 7, 
                 length: 4, 
-                speed: Animation.DefaultWalkSpeed));
+                speed: Constants.DefaultWalkSpeed));
 
             AddAnimation(new Animation(
+                sprite: this,
                 type: AnimationType.Walk,
                 direction: Direction.Left,
                 row: 1, 
                 length: 4, 
-                speed: Animation.DefaultWalkSpeed,
+                speed: Constants.DefaultWalkSpeed,
                 flipHorizontally: true));
 
             AddAnimation(new Animation(
+                sprite: this,
                 type: AnimationType.Walk,
                 direction: Direction.Right,
                 row: 1, 
                 length: 4, 
-                speed: Animation.DefaultWalkSpeed));
+                speed: Constants.DefaultWalkSpeed));
         }
     }
 }

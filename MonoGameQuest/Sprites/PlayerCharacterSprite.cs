@@ -9,62 +9,53 @@ namespace MonoGameQuest.Sprites
     public abstract class PlayerCharacterSprite
     {
         readonly Dictionary<Tuple<AnimationType, Direction>, Animation> _animations; 
-        int _animationSpeed;
-        readonly Stack<Action<SpriteBatch>> _animationStack;
-        int _animationTimeAtCurrentFrame;
         readonly ContentManager _contentManager;
-        readonly int _height;
-        bool _isIdling;
-        bool _isWalking;
+        readonly int _unscaledHeight;
         readonly Stack<Action> _movement;
         readonly int _movementLength;
         readonly int _movementSpeed;
         int _movementTimeAtCurrentPosition;
-        readonly int _offsetX;
-        readonly int _offsetY;
-        Vector2 _mapPosition;
-        int _mapTileHeight;
-        int _mapTileWidth;
-        Direction _orientation;
+        readonly int _unscaledOffsetX;
+        readonly int _unscaledOffsetY;
+        Vector2 _position;
+        private readonly Map _map;
         int _scale = 1;
         int _scaledHeight;
         int _scaledOffsetX;
         int _scaledOffsetY;
         int _scaledWidth;
-        Texture2D _spritesheet;
-        readonly string _spritesheetName;
-        readonly int _width;
+        Texture2D _spriteSheet;
+        readonly string _spriteSheetName;
+        readonly int _unscaledWidth;
 
         protected PlayerCharacterSprite(
             ContentManager contentManager,
-            string spritesheetName,
+            string spriteSheetName,
             int height,
             int width,
             int offsetX,
             int offsetY,
-            Vector2 mapPosition,
-            int mapTileHeight,
-            int mapTileWidth,
+            Vector2 position,
+            Map map,
             int movementLength,
             int movementSpeed)
         {
             _contentManager = contentManager;
-            _spritesheetName = spritesheetName;
-            _height = _scaledHeight = height;
-            _width = _scaledWidth = width;
-            _offsetX = _scaledOffsetX = offsetX;
-            _offsetY = _scaledOffsetY = offsetY;
-            _mapPosition = mapPosition;
-            _mapTileHeight = mapTileHeight;
-            _mapTileWidth = mapTileWidth;
+            _spriteSheetName = spriteSheetName;
+            _unscaledHeight = _scaledHeight = height;
+            _unscaledWidth = _scaledWidth = width;
+            _unscaledOffsetX = _scaledOffsetX = offsetX;
+            _unscaledOffsetY = _scaledOffsetY = offsetY;
+            _position = position;
+            _map = map;
             _movementLength = movementLength;
             _movementSpeed = movementSpeed;
 
             _animations = new Dictionary<Tuple<AnimationType, Direction>, Animation>();
-            _animationStack = new Stack<Action<SpriteBatch>>();
             _movement = new Stack<Action>();
-            _orientation = Direction.Down;
-            _spritesheet = _contentManager.Load<Texture2D>(string.Concat(@"images\1\", _spritesheetName));
+            _spriteSheet = _contentManager.Load<Texture2D>(string.Concat(@"images\1\", _spriteSheetName));
+
+            Orientation = Direction.Down;
         }
 
         public void AddAnimation(Animation animation)
@@ -80,70 +71,27 @@ namespace MonoGameQuest.Sprites
             _animations.Add(key, animation);
         }
         
-        public void Animate(
-            Animation animation, 
-            Action onFrameStart)
-        {
-            _animationTimeAtCurrentFrame = 0;
-            _animationStack.Clear();
-
-            _animationSpeed = animation.Speed;
-
-            for (var n = animation.Length - 1; n >= 0; n--)
-            {
-                var index = n;
-                _animationStack.Push(spriteBatch =>
-                {
-                    onFrameStart();
-
-                    var sourceRectangle = new Rectangle(
-                        index * _scaledWidth,
-                        animation.Row * _scaledHeight,
-                        _scaledWidth,
-                        _scaledHeight);
-
-                    var offsetPosition = new Vector2(
-                        _mapPosition.X + _scaledOffsetX,
-                        _mapPosition.Y + _scaledOffsetY);
-
-                    spriteBatch.Draw(
-                        texture: _spritesheet, 
-                        position: offsetPosition, 
-                        sourceRectangle: sourceRectangle, 
-                        color: Color.White, 
-                        rotation: 0f, 
-                        origin: Vector2.Zero, 
-                        scale: Vector2.One, 
-                        effect: animation.FlipHorizontally ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 
-                        depth: 0f);
-                });
-            }
-        }
-        
-        public void Draw(SpriteBatch spriteBatch)
-        {
-            if (IsAnimating)
-            {
-                _animationStack.Peek()(spriteBatch);
-            }
-        }
-
-        public void Idle()
+        public void Animate(AnimationType type)
         {
             Animation animation;
 
-            var key = new Tuple<AnimationType, Direction>(AnimationType.Idle, _orientation);
+            var key = new Tuple<AnimationType, Direction>(type, Orientation);
             if (!_animations.TryGetValue(key, out animation))
                 throw new InvalidOperationException("No animation has been added for the specified type and key.");
 
-            Animate(animation, () =>
-            {
-                _isWalking = false;
-                _isIdling = true;
-            });
+            CurrentAnimation = animation;
+            CurrentAnimation.Reset();
         }
 
-        public bool IsAnimating { get { return _animationStack.Count > 0; }}
+        public Animation CurrentAnimation { get; protected set; }
+
+        public void Draw(SpriteBatch spriteBatch)
+        {
+            if (CurrentAnimation != null)
+                CurrentAnimation.Draw(spriteBatch);
+        }
+
+        public int Height { get { return _scaledHeight; } }
 
         public bool IsMoving { get { return _movement.Count > 0; } }
 
@@ -152,15 +100,12 @@ namespace MonoGameQuest.Sprites
             _movementTimeAtCurrentPosition = 0;
             _movement.Clear();
 
-            if (_orientation != direction)
+            if (Orientation != direction)
             {
-                _orientation = direction;
+                Orientation = direction;
 
-                if (_isWalking)
-                {
-                    // start a new walk animation for the new orientation
-                    Walk();
-                }
+                // start a new walk animation for the new orientation
+                Animate(AnimationType.Walk);
             }
 
             var offsetX = 0;
@@ -179,28 +124,35 @@ namespace MonoGameQuest.Sprites
             {
                 _movement.Push(() =>
                 {
-                    _mapPosition = new Vector2(
-                        _mapPosition.X + (offsetX * _mapTileWidth) / _movementLength,
-                        _mapPosition.Y + (offsetY * _mapTileHeight) / _movementLength);
+                    _position = new Vector2(
+                        _position.X + (offsetX * _map.TileWidth) / _movementLength,
+                        _position.Y + (offsetY * _map.TileHeight) / _movementLength);
                 });
             }
         }
+
+        public int OffsetX { get { return _scaledOffsetX; } }
+
+        public int OffsetY { get { return _scaledOffsetY; } }
+
+        public Direction Orientation { get; protected set; }
+
+        public Vector2 Position { get { return _position; } }
 
         void SetScale(UpdateContext context)
         {
             _scale = context.MapScale;
 
-            _mapTileHeight = context.MapTileHeight;
-            _mapTileWidth = context.MapTileWidth;
-
-            _spritesheet = _contentManager.Load<Texture2D>(string.Concat(@"images\", _scale, @"\", _spritesheetName));
+            _spriteSheet = _contentManager.Load<Texture2D>(string.Concat(@"images\", _scale, @"\", _spriteSheetName));
             
-            _scaledHeight = _height * _scale;
-            _scaledWidth = _width * _scale;
+            _scaledHeight = _unscaledHeight * _scale;
+            _scaledWidth = _unscaledWidth * _scale;
             
-            _scaledOffsetX = _offsetX * _scale;
-            _scaledOffsetY = _offsetY * _scale;
+            _scaledOffsetX = _unscaledOffsetX * _scale;
+            _scaledOffsetY = _unscaledOffsetY * _scale;
         }
+
+        public Texture2D SpriteSheet { get { return _spriteSheet; } }
         
         public void Update(UpdateContext context)
         {
@@ -222,49 +174,25 @@ namespace MonoGameQuest.Sprites
                 }
             }
 
-            if (IsAnimating)
-            {
-                _animationTimeAtCurrentFrame += context.GameTime.ElapsedGameTime.Milliseconds;
-
-                if (_animationTimeAtCurrentFrame > _animationSpeed)
-                {
-                    _animationTimeAtCurrentFrame = 0;
-                    _animationStack.Pop();
-
-                    if (_animationStack.Count < 1)
-                    {
-                        _isIdling = false;
-                        _isWalking = false;
-                    }
-                }
-            }
+            if (CurrentAnimation != null)
+                CurrentAnimation.Update(context.GameTime);
 
             // start walking if the sprite is moving and isn't already walking:
-            if (wasMoving && !_isWalking)
-                Walk();
+            if (wasMoving && (CurrentAnimation == null || CurrentAnimation.Type != AnimationType.Walk))
+                Animate(AnimationType.Walk);
             
             // stop walking if the sprite has stopped moving:
-            if (!wasMoving && _isWalking)
-                Idle();
+            if (!wasMoving && (CurrentAnimation == null || CurrentAnimation.Type == AnimationType.Walk))
+                Animate(AnimationType.Idle);
 
             // if not moving and not already idling, start idling:
-            if (!wasMoving && !_isIdling)
-                Idle();
+            if (!wasMoving && (CurrentAnimation == null || CurrentAnimation.Type != AnimationType.Idle))
+                Animate(AnimationType.Idle);
+
+            if (CurrentAnimation == null)
+                Animate(AnimationType.Idle);
         }
 
-        public void Walk()
-        {
-            Animation animation;
-
-            var key = new Tuple<AnimationType, Direction>(AnimationType.Walk, _orientation);
-            if (!_animations.TryGetValue(key, out animation))
-                throw new InvalidOperationException("No animation has been added for the specified type and key.");
-
-            Animate(animation, () =>
-            {
-                _isIdling = false;
-                _isWalking = true;
-            });
-        }
+        public int Width { get { return _scaledWidth; } }
     }
 }
