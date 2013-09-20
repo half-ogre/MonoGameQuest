@@ -11,8 +11,12 @@ namespace MonoGameQuest
         public const int DefaultWalkSpeed = 100;
 
         public Animation(
+            AnimationType type,
+            Direction direction,
             int row,
-            int length)
+            int length,
+            int speed,
+            bool flipHorizontally = false)
         {
             if (row < 0)
                 throw new ArgumentException("Animation row must be at least zero.", "row");
@@ -20,11 +24,27 @@ namespace MonoGameQuest
             if (length < 1)
                 throw new ArgumentException("Animation length must be greater than zero.", "length");
 
+            if (speed < 1)
+                throw new ArgumentException("Animation speed must be greater than zero.", "speed");
+
+            Type = type;
+            Direction = direction;
             Row = row;
             Length = length;
+            Speed = speed;
+            FlipHorizontally = flipHorizontally;
         }
 
+        public AnimationType Type { get; private set; }
+
+        public Direction Direction { get; private set; }
+        
+        public bool FlipHorizontally { get; private set; }
+        
         public int Length { get; private set; }
+
         public int Row { get; private set; }
+        
+        public int Speed { get; private set; }
     }
 }

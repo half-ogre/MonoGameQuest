@@ -8,15 +8,12 @@ namespace MonoGameQuest.Sprites
 {
     public abstract class PlayerCharacterSprite
     {
+        readonly Dictionary<Tuple<AnimationType, Direction>, Animation> _animations; 
         int _animationSpeed;
         readonly Stack<Action<SpriteBatch>> _animationStack;
         int _animationTimeAtCurrentFrame;
         readonly ContentManager _contentManager;
         readonly int _height;
-        readonly int _idleAnimationSpeed;
-        readonly Animation _idleDownAnimation;
-        readonly Animation _idleRightAnimation;
-        readonly Animation _idleUpAnimation;
         bool _isIdling;
         bool _isWalking;
         readonly Stack<Action> _movement;
@@ -36,10 +33,6 @@ namespace MonoGameQuest.Sprites
         int _scaledWidth;
         Texture2D _spritesheet;
         readonly string _spritesheetName;
-        readonly int _walkAnimationSpeed;
-        readonly Animation _walkDownAnimation;
-        readonly Animation _walkRightAnimation;
-        readonly Animation _walkUpAnimation;
         readonly int _width;
 
         protected PlayerCharacterSprite(
@@ -53,15 +46,7 @@ namespace MonoGameQuest.Sprites
             int mapTileHeight,
             int mapTileWidth,
             int movementLength,
-            int movementSpeed,
-            int idleAnimationSpeed,
-            Animation idleUpAnimation,
-            Animation idleDownAnimation,
-            Animation idleRightAnimation,
-            int walkAnimationSpeed,
-            Animation walkUpAnimation,
-            Animation walkDownAnimation,
-            Animation walkRightAnimation)
+            int movementSpeed)
         {
             _contentManager = contentManager;
             _spritesheetName = spritesheetName;
@@ -74,30 +59,35 @@ namespace MonoGameQuest.Sprites
             _mapTileWidth = mapTileWidth;
             _movementLength = movementLength;
             _movementSpeed = movementSpeed;
-            _idleAnimationSpeed = idleAnimationSpeed;
-            _idleUpAnimation = idleUpAnimation;
-            _idleDownAnimation = idleDownAnimation;
-            _idleRightAnimation = idleRightAnimation;
-            _walkAnimationSpeed = walkAnimationSpeed;
-            _walkUpAnimation = walkUpAnimation;
-            _walkDownAnimation = walkDownAnimation;
-            _walkRightAnimation = walkRightAnimation;
 
+            _animations = new Dictionary<Tuple<AnimationType, Direction>, Animation>();
             _animationStack = new Stack<Action<SpriteBatch>>();
             _movement = new Stack<Action>();
+            _orientation = Direction.Down;
             _spritesheet = _contentManager.Load<Texture2D>(string.Concat(@"images\1\", _spritesheetName));
         }
 
+        public void AddAnimation(Animation animation)
+        {
+            if (animation == null)
+                throw new ArgumentNullException("animation");
+
+            var key = new Tuple<AnimationType, Direction>(animation.Type, animation.Direction);
+
+            if (_animations.ContainsKey(key))
+                throw new ArgumentException("An animation with the specified type and direction has already been added.", "animation");
+
+            _animations.Add(key, animation);
+        }
+        
         public void Animate(
             Animation animation, 
-            int speed, 
-            bool flipHorizontally, 
             Action onFrameStart)
         {
             _animationTimeAtCurrentFrame = 0;
             _animationStack.Clear();
 
-            _animationSpeed = speed;
+            _animationSpeed = animation.Speed;
 
             for (var n = animation.Length - 1; n >= 0; n--)
             {
@@ -124,7 +114,7 @@ namespace MonoGameQuest.Sprites
                         rotation: 0f, 
                         origin: Vector2.Zero, 
                         scale: Vector2.One, 
-                        effect: flipHorizontally ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 
+                        effect: animation.FlipHorizontally ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 
                         depth: 0f);
                 });
             }
@@ -140,28 +130,13 @@ namespace MonoGameQuest.Sprites
 
         public void Idle()
         {
-            Animation idleAnimation;
-            bool flip = false;
+            Animation animation;
 
-            if (_orientation == Direction.Up)
-            {
-                idleAnimation = _idleUpAnimation;
-            }
-            else if (_orientation == Direction.Left)
-            {
-                idleAnimation = _idleRightAnimation;
-                flip = true;
-            }
-            else if (_orientation == Direction.Right)
-            {
-                idleAnimation = _idleRightAnimation;
-            }
-            else // default to down:
-            {
-                idleAnimation = _idleDownAnimation;
-            }
+            var key = new Tuple<AnimationType, Direction>(AnimationType.Idle, _orientation);
+            if (!_animations.TryGetValue(key, out animation))
+                throw new InvalidOperationException("No animation has been added for the specified type and key.");
 
-            Animate(idleAnimation, _idleAnimationSpeed, flip, () =>
+            Animate(animation, () =>
             {
                 _isWalking = false;
                 _isIdling = true;
@@ -279,28 +254,13 @@ namespace MonoGameQuest.Sprites
 
         public void Walk()
         {
-            Animation walkAnimation;
-            bool flip = false;
+            Animation animation;
 
-            if (_orientation == Direction.Up)
-            {
-                walkAnimation = _walkUpAnimation;
-            }
-            else if (_orientation == Direction.Left)
-            {
-                walkAnimation = _walkRightAnimation;
-                flip = true;
-            }
-            else if (_orientation == Direction.Right)
-            {
-                walkAnimation = _walkRightAnimation;
-            }
-            else // default to down:
-            {
-                walkAnimation = _walkDownAnimation;
-            }
+            var key = new Tuple<AnimationType, Direction>(AnimationType.Walk, _orientation);
+            if (!_animations.TryGetValue(key, out animation))
+                throw new InvalidOperationException("No animation has been added for the specified type and key.");
 
-            Animate(walkAnimation, _walkAnimationSpeed, flip, () =>
+            Animate(animation, () =>
             {
                 _isIdling = false;
                 _isWalking = true;
