@@ -35,8 +35,6 @@ namespace MonoGameQuest
             FlipHorizontally = flipHorizontally;
         }
 
-        public AnimationType Type { get; private set; }
-
         public Direction Direction { get; private set; }
         
         public bool FlipHorizontally { get; private set; }
@@ -46,5 +44,7 @@ namespace MonoGameQuest
         public int Row { get; private set; }
         
         public int Speed { get; private set; }
+
+        public AnimationType Type { get; private set; }
     }
 }
