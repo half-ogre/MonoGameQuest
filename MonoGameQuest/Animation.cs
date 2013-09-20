@@ -49,8 +49,8 @@ namespace MonoGameQuest
                 _sprite.Height);
 
             var offsetPosition = new Vector2(
-                _sprite.Position.X + _sprite.OffsetX,
-                _sprite.Position.Y + _sprite.OffsetY);
+                (_sprite.Position.X * _sprite.Map.TileWidth) + _sprite.OffsetX,
+                (_sprite.Position.Y * _sprite.Map.TileHeight) + _sprite.OffsetY);
 
             spriteBatch.Draw(
                 texture: _sprite.SpriteSheet,

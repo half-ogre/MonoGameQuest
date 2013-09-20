@@ -18,7 +18,6 @@ namespace MonoGameQuest.Sprites
         readonly int _unscaledOffsetX;
         readonly int _unscaledOffsetY;
         Vector2 _position;
-        private readonly Map _map;
         int _scale = 1;
         int _scaledHeight;
         int _scaledOffsetX;
@@ -47,7 +46,7 @@ namespace MonoGameQuest.Sprites
             _unscaledOffsetX = _scaledOffsetX = offsetX;
             _unscaledOffsetY = _scaledOffsetY = offsetY;
             _position = position;
-            _map = map;
+            Map = map;
             _movementLength = movementLength;
             _movementSpeed = movementSpeed;
 
@@ -95,6 +94,8 @@ namespace MonoGameQuest.Sprites
 
         public bool IsMoving { get { return _movement.Count > 0; } }
 
+        public Map Map { get; private set; }
+
         public void Move(Direction direction)
         {
             _movementTimeAtCurrentPosition = 0;
@@ -108,25 +109,25 @@ namespace MonoGameQuest.Sprites
                 Animate(AnimationType.Walk);
             }
 
-            var offsetX = 0;
-            var offsetY = 0;
+            var offsetX = 0f;
+            var offsetY = 0f;
 
             if (direction == Direction.Up)
-                offsetY = -1;
+                offsetY = -1f;
             if (direction == Direction.Down)
-                offsetY = 1;
+                offsetY = 1f;
             if (direction == Direction.Left)
-                offsetX = -1;
+                offsetX = -1f;
             if (direction == Direction.Right)
-                offsetX = 1;
+                offsetX = 1f;
 
             for (var n = _movementLength - 1; n >= 0; n--)
             {
                 _movement.Push(() =>
                 {
                     _position = new Vector2(
-                        _position.X + (offsetX * _map.TileWidth) / _movementLength,
-                        _position.Y + (offsetY * _map.TileHeight) / _movementLength);
+                        _position.X + (offsetX / _movementLength),
+                        _position.Y + (offsetY / _movementLength));
                 });
             }
         }
