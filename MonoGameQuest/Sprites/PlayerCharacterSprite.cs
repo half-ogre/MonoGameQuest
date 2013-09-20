@@ -8,8 +8,8 @@ namespace MonoGameQuest.Sprites
 {
     public abstract class PlayerCharacterSprite
     {
-        readonly Stack<Action<SpriteBatch>> _animation;
         int _animationSpeed;
+        readonly Stack<Action<SpriteBatch>> _animationStack;
         int _animationTimeAtCurrentFrame;
         readonly ContentManager _contentManager;
         readonly int _height;
@@ -83,26 +83,63 @@ namespace MonoGameQuest.Sprites
             _walkDownAnimation = walkDownAnimation;
             _walkRightAnimation = walkRightAnimation;
 
-            _animation = new Stack<Action<SpriteBatch>>();
+            _animationStack = new Stack<Action<SpriteBatch>>();
             _movement = new Stack<Action>();
             _spritesheet = _contentManager.Load<Texture2D>(string.Concat(@"images\1\", _spritesheetName));
         }
 
+        public void Animate(
+            Animation animation, 
+            int speed, 
+            bool flipHorizontally, 
+            Action onFrameStart)
+        {
+            _animationTimeAtCurrentFrame = 0;
+            _animationStack.Clear();
+
+            _animationSpeed = speed;
+
+            for (var n = animation.Length - 1; n >= 0; n--)
+            {
+                var index = n;
+                _animationStack.Push(spriteBatch =>
+                {
+                    onFrameStart();
+
+                    var sourceRectangle = new Rectangle(
+                        index * _scaledWidth,
+                        animation.Row * _scaledHeight,
+                        _scaledWidth,
+                        _scaledHeight);
+
+                    var offsetPosition = new Vector2(
+                        _mapPosition.X + _scaledOffsetX,
+                        _mapPosition.Y + _scaledOffsetY);
+
+                    spriteBatch.Draw(
+                        texture: _spritesheet, 
+                        position: offsetPosition, 
+                        sourceRectangle: sourceRectangle, 
+                        color: Color.White, 
+                        rotation: 0f, 
+                        origin: Vector2.Zero, 
+                        scale: Vector2.One, 
+                        effect: flipHorizontally ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 
+                        depth: 0f);
+                });
+            }
+        }
+        
         public void Draw(SpriteBatch spriteBatch)
         {
             if (IsAnimating)
             {
-                _animation.Peek()(spriteBatch);
+                _animationStack.Peek()(spriteBatch);
             }
         }
 
         public void Idle()
         {
-            _animationTimeAtCurrentFrame = 0;
-            _animation.Clear();
-
-            _animationSpeed = _idleAnimationSpeed;
-
             Animation idleAnimation;
             bool flip = false;
 
@@ -124,30 +161,14 @@ namespace MonoGameQuest.Sprites
                 idleAnimation = _idleDownAnimation;
             }
 
-            for (var n = idleAnimation.Length - 1; n >= 0; n--)
+            Animate(idleAnimation, _idleAnimationSpeed, flip, () =>
             {
-                var index = n;
-                _animation.Push(spriteBatch =>
-                {
-                    _isWalking = false;
-                    _isIdling = true;
-
-                    var sourceRectangle = new Rectangle(
-                        index * _scaledWidth,
-                        idleAnimation.Row * _scaledHeight,
-                        _scaledWidth,
-                        _scaledHeight);
-
-                    var offsetPosition = new Vector2(
-                        _mapPosition.X + _scaledOffsetX,
-                        _mapPosition.Y + _scaledOffsetY);
-
-                    spriteBatch.Draw(_spritesheet, offsetPosition, sourceRectangle, Color.White, 0f, Vector2.Zero, Vector2.One, flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0f);
-                });
-            }
+                _isWalking = false;
+                _isIdling = true;
+            });
         }
 
-        public bool IsAnimating { get { return _animation.Count > 0; }}
+        public bool IsAnimating { get { return _animationStack.Count > 0; }}
 
         public bool IsMoving { get { return _movement.Count > 0; } }
 
@@ -233,9 +254,9 @@ namespace MonoGameQuest.Sprites
                 if (_animationTimeAtCurrentFrame > _animationSpeed)
                 {
                     _animationTimeAtCurrentFrame = 0;
-                    _animation.Pop();
+                    _animationStack.Pop();
 
-                    if (_animation.Count < 1)
+                    if (_animationStack.Count < 1)
                     {
                         _isIdling = false;
                         _isWalking = false;
@@ -258,11 +279,6 @@ namespace MonoGameQuest.Sprites
 
         public void Walk()
         {
-            _animationTimeAtCurrentFrame = 0;
-            _animation.Clear();
-
-            _animationSpeed = _walkAnimationSpeed;
-
             Animation walkAnimation;
             bool flip = false;
 
@@ -284,27 +300,11 @@ namespace MonoGameQuest.Sprites
                 walkAnimation = _walkDownAnimation;
             }
 
-            for (var n = walkAnimation.Length - 1; n >= 0; n--)
+            Animate(walkAnimation, _walkAnimationSpeed, flip, () =>
             {
-                var index = n;
-                _animation.Push(spriteBatch =>
-                {
-                    _isIdling = false;
-                    _isWalking = true;
-
-                    var sourceRectangle = new Rectangle(
-                        index * _scaledWidth,
-                        walkAnimation.Row * _scaledHeight,
-                        _scaledWidth,
-                        _scaledHeight);
-
-                    var offsetPosition = new Vector2(
-                        _mapPosition.X + _scaledOffsetX,
-                        _mapPosition.Y + _scaledOffsetY);
-
-                    spriteBatch.Draw(_spritesheet, offsetPosition, sourceRectangle, Color.White, 0f, Vector2.Zero, Vector2.One, flip ? SpriteEffects.FlipHorizontally : SpriteEffects.None, 0f);
-                });
-            }
+                _isIdling = false;
+                _isWalking = true;
+            });
         }
     }
 }
