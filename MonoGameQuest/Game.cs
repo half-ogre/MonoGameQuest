@@ -29,7 +29,7 @@ namespace MonoGameQuest
             _pc = new PlayerCharacter(Content, new Vector2(0, 0), _map);
 
             pixelForGrid = new Texture2D(GraphicsDevice, 1, 1);
-            pixelForGrid.SetData(new[] { new Color(Color.Yellow.R, Color.Yellow.G, Color.Yellow.B, 128) });
+            pixelForGrid.SetData(new[] { new Color(Color.Yellow.R, Color.Yellow.G, Color.Yellow.B, 32) });
         }
 
         void SetScale(PresentationParameters presentationParameters)
