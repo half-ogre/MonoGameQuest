@@ -20,49 +20,6 @@ namespace MonoGameQuest
             Content.RootDirectory = @"Content";
         }
 
-        protected override void LoadContent()
-        {
-            // Create a new SpriteBatch, which can be used to draw textures.
-            _spriteBatch = new SpriteBatch(GraphicsDevice);
-
-            _map = new Map(Content);
-            _pc = new PlayerCharacter(Content, new Vector2(0, 0), _map);
-
-            _pixelForGrid = new Texture2D(GraphicsDevice, 1, 1);
-            _pixelForGrid.SetData(new[] { new Color(Color.Yellow.R, Color.Yellow.G, Color.Yellow.B, 32) });
-        }
-
-        void SetScale(PresentationParameters presentationParameters)
-        {
-            if (presentationParameters .BackBufferWidth <= 1500 || presentationParameters.BackBufferHeight <= 870)
-                _scale = 2;
-            else
-                _scale = 3;
-        }
-
-        protected override void Update(GameTime gameTime)
-        {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
-                Exit();
-
-            SetScale(_graphics.GraphicsDevice.PresentationParameters);
-
-            var context = new UpdateContext
-            {
-                GameTime = gameTime,
-                Graphics = _graphics,
-                KeyboardState = Keyboard.GetState(),
-                MapScale = _scale,
-                MapTileHeight = _map.TileHeight,
-                MapTileWidth = _map.TileWidth
-            };
-
-            _map.Update(context);
-            _pc.Update(context);
-
-            base.Update(gameTime);
-        }
-
         protected override void Draw(GameTime gameTime)
         {
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
@@ -119,6 +76,49 @@ namespace MonoGameQuest
                 new Vector2(0, 0),
                 SpriteEffects.None,
                 0);
+        }
+
+        protected override void LoadContent()
+        {
+            // Create a new SpriteBatch, which can be used to draw textures.
+            _spriteBatch = new SpriteBatch(GraphicsDevice);
+
+            _map = new Map(Content);
+            _pc = new PlayerCharacter(Content, new Vector2(0, 0), _map);
+
+            _pixelForGrid = new Texture2D(GraphicsDevice, 1, 1);
+            _pixelForGrid.SetData(new[] { new Color(Color.Yellow.R, Color.Yellow.G, Color.Yellow.B, 32) });
+        }
+
+        void SetScale(PresentationParameters presentationParameters)
+        {
+            if (presentationParameters.BackBufferWidth <= 1500 || presentationParameters.BackBufferHeight <= 870)
+                _scale = 2;
+            else
+                _scale = 3;
+        }
+
+        protected override void Update(GameTime gameTime)
+        {
+            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+                Exit();
+
+            SetScale(_graphics.GraphicsDevice.PresentationParameters);
+
+            var context = new UpdateContext
+            {
+                GameTime = gameTime,
+                Graphics = _graphics,
+                KeyboardState = Keyboard.GetState(),
+                MapScale = _scale,
+                MapTileHeight = _map.TileHeight,
+                MapTileWidth = _map.TileWidth
+            };
+
+            _map.Update(context);
+            _pc.Update(context);
+
+            base.Update(gameTime);
         }
     }
 }
