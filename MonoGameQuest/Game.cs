@@ -11,8 +11,10 @@ namespace MonoGameQuest
         Map _map;
         PlayerCharacter _pc;
         int _scale = 1;
+        bool _showDebugInfo;
         SpriteBatch _spriteBatch;
         Texture2D _pixelForGrid;
+        bool _tildeKeyWasPressed;
 
         public Game()
         {
@@ -27,7 +29,8 @@ namespace MonoGameQuest
             _map.Draw(_spriteBatch, _pc.Position);
             _pc.Draw(_spriteBatch);
 
-            DrawGrid(_spriteBatch);
+            if (_showDebugInfo)
+                DrawGrid(_spriteBatch);
 
             _spriteBatch.End();
 
@@ -102,6 +105,11 @@ namespace MonoGameQuest
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
+
+            var tildeKeyPressed = Keyboard.GetState().IsKeyDown(Keys.OemTilde);
+            if (!tildeKeyPressed && _tildeKeyWasPressed)
+                _showDebugInfo = !_showDebugInfo;
+            _tildeKeyWasPressed = tildeKeyPressed;
 
             SetScale(_graphics.GraphicsDevice.PresentationParameters);
 
