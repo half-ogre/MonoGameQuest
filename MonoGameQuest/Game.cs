@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using System;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -11,6 +12,7 @@ namespace MonoGameQuest
         PlayerCharacter _pc;
         int _scale = 1;
         SpriteBatch _spriteBatch;
+        Texture2D pixelForGrid;
 
         public Game()
         {
@@ -25,6 +27,9 @@ namespace MonoGameQuest
 
             _map = new Map(Content);
             _pc = new PlayerCharacter(Content, new Vector2(0, 0), _map);
+
+            pixelForGrid = new Texture2D(GraphicsDevice, 1, 1);
+            pixelForGrid.SetData(new[] { new Color(Color.Yellow.R, Color.Yellow.G, Color.Yellow.B, 128) });
         }
 
         void SetScale(PresentationParameters presentationParameters)
@@ -65,9 +70,55 @@ namespace MonoGameQuest
             _map.Draw(_spriteBatch, _pc.Position);
             _pc.Draw(_spriteBatch);
 
+            DrawGrid(_spriteBatch);
+
             _spriteBatch.End();
 
             base.Draw(gameTime);
+        }
+
+        void DrawGrid(SpriteBatch spriteBatch)
+        {
+            var mapHeight = _map.Height * _map.TileHeight;
+            var mapWidth = _map.Width*_map.TileWidth;
+
+            DrawLine(spriteBatch, Vector2.Zero, new Vector2(mapWidth, 0));
+            for (int y = 1; y <= _map.DisplayHeight; y++)
+            {
+                var adjustedY = y*_map.TileHeight;
+                DrawLine(spriteBatch, new Vector2(0, adjustedY-1), new Vector2(mapWidth, adjustedY-1));
+                DrawLine(spriteBatch, new Vector2(0, adjustedY), new Vector2(mapWidth, adjustedY));
+            }
+
+            DrawLine(spriteBatch, Vector2.Zero, new Vector2(0, mapHeight));
+            for (int x = 1; x <= _map.DisplayWidth; x++)
+            {
+                var adjustedX = x * _map.TileWidth;
+                DrawLine(spriteBatch, new Vector2(adjustedX-1, 0), new Vector2(adjustedX-1, mapHeight));
+                DrawLine(spriteBatch, new Vector2(adjustedX, 0), new Vector2(adjustedX, mapHeight));
+            }
+        }
+
+        void DrawLine(
+            SpriteBatch spriteBatch, 
+            Vector2 start, 
+            Vector2 end)
+        {
+            var edge = end - start;
+            var angle = (float)Math.Atan2(edge.Y, edge.X);
+            spriteBatch.Draw(
+                pixelForGrid,
+                new Rectangle(
+                    (int)start.X,
+                    (int)start.Y,
+                    (int)edge.Length(),
+                    1),
+                null,
+                Color.White,
+                angle,
+                new Vector2(0, 0),
+                SpriteEffects.None,
+                0);
         }
     }
 }
