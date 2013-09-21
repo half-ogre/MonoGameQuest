@@ -7,12 +7,16 @@ namespace MonoGameQuest
 {
     public class Game : Microsoft.Xna.Framework.Game
     {
+        int _fpsCounter;
+        TimeSpan _fpsElapsedTime = TimeSpan.Zero;
+        int _fpsRate;
         readonly GraphicsDeviceManager _graphics;
         Map _map;
         PlayerCharacter _pc;
         int _scale = 1;
         bool _showDebugInfo;
         SpriteBatch _spriteBatch;
+        SpriteFont _spriteFont;
         Texture2D _pixelForGrid;
         bool _tildeKeyWasPressed;
 
@@ -24,6 +28,9 @@ namespace MonoGameQuest
 
         protected override void Draw(GameTime gameTime)
         {
+            _fpsCounter++;
+            string debugInfo = string.Format("fps: {0}", _fpsRate);
+
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
 
             _map.Draw(_spriteBatch, _pc.Position);
@@ -31,6 +38,12 @@ namespace MonoGameQuest
 
             if (_showDebugInfo)
                 DrawGrid(_spriteBatch);
+
+            if (_showDebugInfo)
+            {
+                _spriteBatch.DrawString(_spriteFont, debugInfo, new Vector2(1, 1), Color.Black, 0, Vector2.Zero, .5f, SpriteEffects.None, 0f);
+                _spriteBatch.DrawString(_spriteFont, debugInfo, new Vector2(0, 0), Color.Yellow, 0, Vector2.Zero, .5f, SpriteEffects.None, 0f);  
+            }
 
             _spriteBatch.End();
 
@@ -91,6 +104,8 @@ namespace MonoGameQuest
 
             _pixelForGrid = new Texture2D(GraphicsDevice, 1, 1);
             _pixelForGrid.SetData(new[] { new Color(Color.Yellow.R, Color.Yellow.G, Color.Yellow.B, 32) });
+
+            _spriteFont = Content.Load<SpriteFont>("Consolas");
         }
 
         void SetScale(PresentationParameters presentationParameters)
@@ -103,6 +118,14 @@ namespace MonoGameQuest
 
         protected override void Update(GameTime gameTime)
         {
+            _fpsElapsedTime += gameTime.ElapsedGameTime;
+            if (_fpsElapsedTime > TimeSpan.FromSeconds(1))
+            {
+                _fpsElapsedTime -= TimeSpan.FromSeconds(1);
+                _fpsRate = _fpsCounter;
+                _fpsCounter = 0;
+            }
+            
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
