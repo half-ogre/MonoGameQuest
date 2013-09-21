@@ -8,7 +8,7 @@ namespace MonoGameQuest.Sprites
 {
     public abstract class PlayerCharacterSprite
     {
-        readonly Dictionary<Tuple<AnimationType, Direction>, Animation> _animations; 
+        readonly Dictionary<Tuple<AnimationType, Direction>, Animation> _animations;
         readonly ContentManager _contentManager;
         readonly int _unscaledHeight;
         readonly Stack<Action> _movement;
@@ -69,7 +69,7 @@ namespace MonoGameQuest.Sprites
 
             _animations.Add(key, animation);
         }
-        
+
         public void Animate(AnimationType type)
         {
             Animation animation;
@@ -98,17 +98,6 @@ namespace MonoGameQuest.Sprites
 
         public void Move(Direction direction)
         {
-            _movementTimeAtCurrentPosition = 0;
-            _movement.Clear();
-
-            if (Orientation != direction)
-            {
-                Orientation = direction;
-
-                // start a new walk animation for the new orientation
-                Animate(AnimationType.Walk);
-            }
-
             var offsetX = 0f;
             var offsetY = 0f;
 
@@ -120,6 +109,24 @@ namespace MonoGameQuest.Sprites
                 offsetX = -1f;
             if (direction == Direction.Right)
                 offsetX = 1f;
+
+            var newX = _position.X + offsetX;
+            var newY = _position.Y + offsetY;
+
+            // don't let the sprite move off the map:
+            if (newX < 0 || newX > Map.Width - 1 || newY < 0 || newY > Map.Height - 1)
+                return;
+
+            _movementTimeAtCurrentPosition = 0;
+            _movement.Clear();
+
+            if (Orientation != direction)
+            {
+                Orientation = direction;
+
+                // start a new walk animation for the new orientation
+                Animate(AnimationType.Walk);
+            }
 
             for (var n = _movementLength - 1; n >= 0; n--)
             {
@@ -145,16 +152,16 @@ namespace MonoGameQuest.Sprites
             _scale = context.MapScale;
 
             _spriteSheet = _contentManager.Load<Texture2D>(string.Concat(@"images\", _scale, @"\", _spriteSheetName));
-            
+
             _scaledHeight = _unscaledHeight * _scale;
             _scaledWidth = _unscaledWidth * _scale;
-            
+
             _scaledOffsetX = _unscaledOffsetX * _scale;
             _scaledOffsetY = _unscaledOffsetY * _scale;
         }
 
         public Texture2D SpriteSheet { get { return _spriteSheet; } }
-        
+
         public void Update(UpdateContext context)
         {
             if (context.MapScale != _scale)
@@ -181,7 +188,7 @@ namespace MonoGameQuest.Sprites
             // start walking if the sprite is moving and isn't already walking:
             if (wasMoving && (CurrentAnimation == null || CurrentAnimation.Type != AnimationType.Walk))
                 Animate(AnimationType.Walk);
-            
+
             // stop walking if the sprite has stopped moving:
             if (!wasMoving && (CurrentAnimation == null || CurrentAnimation.Type == AnimationType.Walk))
                 Animate(AnimationType.Idle);
