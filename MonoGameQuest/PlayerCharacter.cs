@@ -18,10 +18,8 @@ namespace MonoGameQuest
         {
             if (contentManager == null)
                 throw new ArgumentNullException("contentManager");
-
-            Position = position;
             
-            _sprite = new ClothArmor(contentManager, new Vector2(0, 0), map);
+            _sprite = new ClothArmor(contentManager, Vector2.Zero, map);
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -29,7 +27,7 @@ namespace MonoGameQuest
             _sprite.Draw(spriteBatch);
         }
 
-        public Vector2 Position { get; set; }
+        public Vector2 Position { get { return _sprite.Position; } }
 
         public void Update(UpdateContext context)
         {

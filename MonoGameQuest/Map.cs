@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
@@ -11,6 +10,8 @@ namespace MonoGameQuest
     public class Map
     {
         readonly ContentManager _contentManager;
+        int _displayHeight;
+        int _displayWidth;
         readonly Dictionary<Vector2, List<int>> _terrain;
         readonly int _tileHeight;
         Texture2D _tileSheet;
@@ -20,10 +21,6 @@ namespace MonoGameQuest
         int _scale = 1;
         int _scaledTileHeight;
         int _scaledTileWidth;
-        int _screenColumns = 0;
-        int _screenHeight = 0;
-        int _screenRows = 0;
-        int _screenWidth = 0;
 
         public Map(ContentManager contentManager)
         {
@@ -60,9 +57,13 @@ namespace MonoGameQuest
             }
         }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public int DisplayHeight { get { return _displayHeight; } }
+
+        public int DisplayWidth { get { return _displayWidth; } }
+
+        public void Draw(SpriteBatch spriteBatch, Vector2 position)
         {
-            if (_screenRows == 0 || _screenColumns == 0)
+            if (_displayHeight == 0 || _displayWidth == 0)
                 return; // the map hasn't been updated even once, and so can't be drawn
             
             spriteBatch.GraphicsDevice.Clear(new Color(
@@ -70,13 +71,13 @@ namespace MonoGameQuest
                 g: _tmxMap.BackgroundColor.G,
                 b: _tmxMap.BackgroundColor.R));
 
-            for (var x = 0; x < _screenColumns; x++)
+            for (var x = 0; x < _displayWidth; x++)
             {
-                for (var y = 0; y < _screenRows; y++)
+                for (var y = 0; y < _displayHeight; y++)
                 {
-                    var position = new Vector2(x, y);
+                    var mapIndex = new Vector2(x, y);
                     List<int> tileIndices;
-                    if (_terrain.TryGetValue(position, out tileIndices))
+                    if (_terrain.TryGetValue(mapIndex, out tileIndices))
                     {
                         foreach (var tileIndex in tileIndices)
                             spriteBatch.Draw(
@@ -109,7 +110,9 @@ namespace MonoGameQuest
                 height: _scaledTileHeight);
         }
 
-        void SetScale(int scale)
+        public int Height { get { return _tmxMap.Height; } }
+
+        void SetScale(int scale, int displayHeight, int displayWidth)
         {
             _scale = scale;
 
@@ -119,6 +122,10 @@ namespace MonoGameQuest
             _scaledTileWidth = _tileWidth * _scale;
 
             _tilesheetColumns = _tileSheet.Width / _scaledTileWidth;
+
+            // TODO: this assumes the display size a multiple of the tile size. Eventually we'll need to handle the offset.
+            _displayHeight = displayHeight / _scaledTileHeight;
+            _displayWidth = displayWidth / _scaledTileWidth;
         }
 
         public int TileHeight { get { return _scaledTileHeight; } }
@@ -128,23 +135,12 @@ namespace MonoGameQuest
         public void Update(UpdateContext context)
         {
             if (context.MapScale != _scale)
-                SetScale(context.MapScale);
-
-            if (_screenWidth != context.Graphics.GraphicsDevice.PresentationParameters.BackBufferWidth)
-            {
-                _screenWidth = context.Graphics.GraphicsDevice.PresentationParameters.BackBufferWidth;
-                _screenColumns = _screenWidth / _scaledTileWidth;
-                if (_screenWidth % _scaledTileWidth > 0)
-                    _screenColumns++;
-            }
-
-            if (_screenHeight != context.Graphics.GraphicsDevice.PresentationParameters.BackBufferHeight)
-            {
-                _screenHeight = context.Graphics.GraphicsDevice.PresentationParameters.BackBufferHeight;
-                _screenRows = _screenHeight / _scaledTileHeight;
-                if (_screenHeight % _scaledTileHeight > 0)
-                    _screenRows++;
-            }
+                SetScale(
+                    context.MapScale, 
+                    context.Graphics.GraphicsDevice.PresentationParameters.BackBufferHeight,
+                    context.Graphics.GraphicsDevice.PresentationParameters.BackBufferWidth);
         }
+
+        public int Width { get { return _tmxMap.Width; } }
     }
 }

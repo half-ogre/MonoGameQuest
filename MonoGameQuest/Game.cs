@@ -62,7 +62,7 @@ namespace MonoGameQuest
         {
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
 
-            _map.Draw(_spriteBatch);
+            _map.Draw(_spriteBatch, _pc.Position);
             _pc.Draw(_spriteBatch);
 
             _spriteBatch.End();
