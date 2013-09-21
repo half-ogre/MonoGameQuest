@@ -12,7 +12,7 @@ namespace MonoGameQuest
         PlayerCharacter _pc;
         int _scale = 1;
         SpriteBatch _spriteBatch;
-        Texture2D pixelForGrid;
+        Texture2D _pixelForGrid;
 
         public Game()
         {
@@ -28,8 +28,8 @@ namespace MonoGameQuest
             _map = new Map(Content);
             _pc = new PlayerCharacter(Content, new Vector2(0, 0), _map);
 
-            pixelForGrid = new Texture2D(GraphicsDevice, 1, 1);
-            pixelForGrid.SetData(new[] { new Color(Color.Yellow.R, Color.Yellow.G, Color.Yellow.B, 32) });
+            _pixelForGrid = new Texture2D(GraphicsDevice, 1, 1);
+            _pixelForGrid.SetData(new[] { new Color(Color.Yellow.R, Color.Yellow.G, Color.Yellow.B, 32) });
         }
 
         void SetScale(PresentationParameters presentationParameters)
@@ -107,7 +107,7 @@ namespace MonoGameQuest
             var edge = end - start;
             var angle = (float)Math.Atan2(edge.Y, edge.X);
             spriteBatch.Draw(
-                pixelForGrid,
+                _pixelForGrid,
                 new Rectangle(
                     (int)start.X,
                     (int)start.Y,
