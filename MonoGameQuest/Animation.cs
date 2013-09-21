@@ -51,8 +51,8 @@ namespace MonoGameQuest
             float adjustedX;
             float adjustedY;
 
-            float zeroBasedDisplayWidth = _sprite.Map.Width - 1f;
-            float zeroBasedDisplayHeight = _sprite.Map.Height - 1f;
+            float zeroBasedDisplayWidth = _sprite.Map.DisplayWidth - 1f;
+            float zeroBasedDisplayHeight = _sprite.Map.DisplayHeight - 1f;
             float zeroBasedDisplayMidpointX = (_sprite.Map.DisplayWidth - 1f) / 2f;
             float zeroBasedDisplayMidpointY = (_sprite.Map.DisplayHeight - 1f) / 2f;
             
