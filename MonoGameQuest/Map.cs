@@ -57,12 +57,14 @@ namespace MonoGameQuest
 
         public int DisplayWidth { get { return _displayWidth; } }
 
-        public void Draw(SpriteBatch spriteBatch, Vector2 position)
+        public override void Draw(GameTime gameTime)
         {
             if (_displayHeight == 0 || _displayWidth == 0)
                 return; // the map hasn't been updated even once, and so can't be drawn
+
+            SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
             
-            spriteBatch.GraphicsDevice.Clear(new Color(
+            SpriteBatch.GraphicsDevice.Clear(new Color(
                 r: _tmxMap.BackgroundColor.R,
                 g: _tmxMap.BackgroundColor.G,
                 b: _tmxMap.BackgroundColor.R));
@@ -76,7 +78,7 @@ namespace MonoGameQuest
                     if (_terrain.TryGetValue(mapIndex, out tileIndices))
                     {
                         foreach (var tileIndex in tileIndices)
-                            spriteBatch.Draw(
+                            SpriteBatch.Draw(
                                 texture: _tileSheet,
                                 position: new Vector2(x * _scaledTileWidth, y * _scaledTileHeight),
                                 sourceRectangle: GetSourceRectangleForTileIndex(tileIndex),
@@ -84,6 +86,8 @@ namespace MonoGameQuest
                     }
                 }
             }
+
+            SpriteBatch.End();
         }
 
         private Rectangle GetSourceRectangleForTileIndex(int index)

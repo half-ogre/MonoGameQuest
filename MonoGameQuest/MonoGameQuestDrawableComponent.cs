@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace MonoGameQuest
 {
@@ -9,5 +10,14 @@ namespace MonoGameQuest
         }
 
         public new MonoGameQuest Game { get { return base.Game as MonoGameQuest; } }
+
+        protected override void LoadContent()
+        {
+            base.LoadContent();
+
+            SpriteBatch = new SpriteBatch(GraphicsDevice);
+        }
+
+        public SpriteBatch SpriteBatch { get; private set; }
     }
 }

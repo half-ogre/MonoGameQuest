@@ -11,8 +11,6 @@ namespace MonoGameQuest
         TimeSpan _fpsElapsedTime = TimeSpan.Zero;
         int _fpsRate;
         readonly GraphicsDeviceManager _graphics;
-        Map _map;
-        PlayerCharacter _pc;
         bool _showDebugInfo;
         SpriteBatch _spriteBatch;
         SpriteFont _spriteFont;
@@ -35,9 +33,6 @@ namespace MonoGameQuest
 
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
 
-            _map.Draw(_spriteBatch, _pc.Position);
-            _pc.Draw(_spriteBatch);
-
             if (_showDebugInfo)
                 DrawGrid(_spriteBatch);
 
@@ -54,21 +49,21 @@ namespace MonoGameQuest
 
         void DrawGrid(SpriteBatch spriteBatch)
         {
-            var mapHeight = _map.Height * _map.TileHeight;
-            var mapWidth = _map.Width*_map.TileWidth;
+            var mapHeight = Map.Height * Map.TileHeight;
+            var mapWidth = Map.Width*Map.TileWidth;
 
             DrawLine(spriteBatch, Vector2.Zero, new Vector2(mapWidth, 0));
-            for (var y = 1; y <= _map.DisplayHeight; y++)
+            for (var y = 1; y <= Map.DisplayHeight; y++)
             {
-                var adjustedY = y*_map.TileHeight;
+                var adjustedY = y*Map.TileHeight;
                 DrawLine(spriteBatch, new Vector2(0, adjustedY-1), new Vector2(mapWidth, adjustedY-1));
                 DrawLine(spriteBatch, new Vector2(0, adjustedY), new Vector2(mapWidth, adjustedY));
             }
 
             DrawLine(spriteBatch, Vector2.Zero, new Vector2(0, mapHeight));
-            for (int x = 1; x <= _map.DisplayWidth; x++)
+            for (var x = 1; x <= Map.DisplayWidth; x++)
             {
-                var adjustedX = x * _map.TileWidth;
+                var adjustedX = x * Map.TileWidth;
                 DrawLine(spriteBatch, new Vector2(adjustedX-1, 0), new Vector2(adjustedX-1, mapHeight));
                 DrawLine(spriteBatch, new Vector2(adjustedX, 0), new Vector2(adjustedX, mapHeight));
             }
@@ -98,8 +93,10 @@ namespace MonoGameQuest
 
         protected override void Initialize()
         {
-            _map = new Map(this);
-            Components.Add(_map);
+            Map = new Map(this);
+            Components.Add(Map);
+
+            Components.Add(new PlayerCharacter(this));
             
             base.Initialize();
         }
@@ -109,13 +106,13 @@ namespace MonoGameQuest
             // Create a new SpriteBatch, which can be used to draw textures.
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            _pc = new PlayerCharacter(Content, new Vector2(0, 0), _map);
-
             _pixelForGrid = new Texture2D(GraphicsDevice, 1, 1);
             _pixelForGrid.SetData(new[] { new Color(Color.Yellow.R, Color.Yellow.G, Color.Yellow.B, 32) });
 
             _spriteFont = Content.Load<SpriteFont>("Consolas");
         }
+
+        public Map Map { get; private set; }
 
         public int Scale { get; private set; }
 
@@ -146,18 +143,6 @@ namespace MonoGameQuest
             _tildeKeyWasPressed = tildeKeyPressed;
 
             SetScale(_graphics.GraphicsDevice.PresentationParameters);
-
-            var context = new UpdateContext
-            {
-                GameTime = gameTime,
-                Graphics = _graphics,
-                KeyboardState = Keyboard.GetState(),
-                MapScale = Scale,
-                MapTileHeight = _map.TileHeight,
-                MapTileWidth = _map.TileWidth
-            };
-
-            _pc.Update(context);
 
             base.Update(gameTime);
         }

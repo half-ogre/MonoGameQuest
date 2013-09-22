@@ -5,20 +5,21 @@ using MonoGameQuest.Sprites;
 
 namespace MonoGameQuest
 {
-    public class Animation
+    public class Animation : MonoGameQuestDrawableComponent
     {
         int _currentIndex;
         int _timeAtCurrentIndex;
         readonly PlayerCharacterSprite _sprite;
 
         public Animation(
+            MonoGameQuest game,
             PlayerCharacterSprite sprite,
             AnimationType type,
             Direction direction,
             int row,
             int length,
             int speed,
-            bool flipHorizontally = false)
+            bool flipHorizontally = false) : base(game)
         {
             _sprite = sprite;
             if (row < 0)
@@ -40,7 +41,7 @@ namespace MonoGameQuest
 
         public Direction Direction { get; private set; }
 
-        public void Draw(SpriteBatch spriteBatch)
+        public override void Draw(GameTime gameTime)
         {
             var sourceRectangle = new Rectangle(
                 _currentIndex * _sprite.Width,
@@ -51,12 +52,12 @@ namespace MonoGameQuest
             float adjustedX;
             float adjustedY;
 
-            float zeroBasedDisplayWidth = _sprite.Map.DisplayWidth - 1f;
-            float zeroBasedDisplayHeight = _sprite.Map.DisplayHeight - 1f;
-            float zeroBasedDisplayMidpointX = (_sprite.Map.DisplayWidth - 1f) / 2f;
-            float zeroBasedDisplayMidpointY = (_sprite.Map.DisplayHeight - 1f) / 2f;
-            float zeroBasedMapWidth = _sprite.Map.Width - 1f;
-            float zeroBasedMapHeight = _sprite.Map.Height - 1f;
+            var zeroBasedDisplayWidth = _sprite.Map.DisplayWidth - 1f;
+            var zeroBasedDisplayHeight = _sprite.Map.DisplayHeight - 1f;
+            var zeroBasedDisplayMidpointX = (_sprite.Map.DisplayWidth - 1f) / 2f;
+            var zeroBasedDisplayMidpointY = (_sprite.Map.DisplayHeight - 1f) / 2f;
+            var zeroBasedMapWidth = _sprite.Map.Width - 1f;
+            var zeroBasedMapHeight = _sprite.Map.Height - 1f;
             
             // adjust sprite position to center, unless the sprite is at the map's edge:
             if (_sprite.Position.X < zeroBasedDisplayMidpointX)
@@ -80,7 +81,8 @@ namespace MonoGameQuest
                 adjustedX,
                 adjustedY);
 
-            spriteBatch.Draw(
+            SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
+            SpriteBatch.Draw(
                 texture: _sprite.SpriteSheet,
                 position: adjustedPosition,
                 sourceRectangle: sourceRectangle,
@@ -90,6 +92,7 @@ namespace MonoGameQuest
                 scale: Vector2.One,
                 effect: FlipHorizontally ? SpriteEffects.FlipHorizontally : SpriteEffects.None,
                 depth: 0f);
+            SpriteBatch.End();
         }
         
         public bool FlipHorizontally { get; private set; }
@@ -108,7 +111,7 @@ namespace MonoGameQuest
 
         public AnimationType Type { get; private set; }
 
-        public void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime)
         {
             _timeAtCurrentIndex += gameTime.ElapsedGameTime.Milliseconds;
 

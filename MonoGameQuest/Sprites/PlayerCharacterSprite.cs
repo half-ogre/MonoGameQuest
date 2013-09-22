@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace MonoGameQuest.Sprites
 {
-    public abstract class PlayerCharacterSprite
+    public abstract class PlayerCharacterSprite : MonoGameQuestComponent
     {
         readonly Dictionary<Tuple<AnimationType, Direction>, Animation> _animations;
         readonly ContentManager _contentManager;
@@ -28,6 +28,7 @@ namespace MonoGameQuest.Sprites
         readonly int _unscaledWidth;
 
         protected PlayerCharacterSprite(
+            MonoGameQuest game,
             ContentManager contentManager,
             string spriteSheetName,
             int height,
@@ -37,7 +38,7 @@ namespace MonoGameQuest.Sprites
             Vector2 position,
             Map map,
             int movementLength,
-            int movementSpeed)
+            int movementSpeed) : base(game)
         {
             _contentManager = contentManager;
             _spriteSheetName = spriteSheetName;
@@ -67,6 +68,10 @@ namespace MonoGameQuest.Sprites
             if (_animations.ContainsKey(key))
                 throw new ArgumentException("An animation with the specified type and direction has already been added.", "animation");
 
+            animation.Enabled = false;
+            animation.Visible = false;
+            Game.Components.Add(animation);
+
             _animations.Add(key, animation);
         }
 
@@ -78,17 +83,19 @@ namespace MonoGameQuest.Sprites
             if (!_animations.TryGetValue(key, out animation))
                 throw new InvalidOperationException("No animation has been added for the specified type and key.");
 
+            if (CurrentAnimation != null)
+            {
+                CurrentAnimation.Enabled = false;
+                CurrentAnimation.Visible = false;
+            }
+
             CurrentAnimation = animation;
             CurrentAnimation.Reset();
+            CurrentAnimation.Enabled = true;
+            CurrentAnimation.Visible = true;
         }
 
         public Animation CurrentAnimation { get; protected set; }
-
-        public void Draw(SpriteBatch spriteBatch)
-        {
-            if (CurrentAnimation != null)
-                CurrentAnimation.Draw(spriteBatch);
-        }
 
         public int Height { get { return _scaledHeight; } }
 
@@ -147,9 +154,9 @@ namespace MonoGameQuest.Sprites
 
         public Vector2 Position { get { return _position; } }
 
-        void SetScale(UpdateContext context)
+        void SetScale()
         {
-            _scale = context.MapScale;
+            _scale = Game.Scale;
 
             _spriteSheet = _contentManager.Load<Texture2D>(string.Concat(@"images\", _scale, @"\", _spriteSheetName));
 
@@ -162,10 +169,10 @@ namespace MonoGameQuest.Sprites
 
         public Texture2D SpriteSheet { get { return _spriteSheet; } }
 
-        public void Update(UpdateContext context)
+        public override void Update(GameTime gameTime)
         {
-            if (context.MapScale != _scale)
-                SetScale(context);
+            if (Game.Scale != _scale)
+                SetScale();
 
             // stash these values because they will change during update, 
             // and we need to know the value when the update started.
@@ -173,7 +180,7 @@ namespace MonoGameQuest.Sprites
 
             if (wasMoving)
             {
-                _movementTimeAtCurrentPosition += context.GameTime.ElapsedGameTime.Milliseconds;
+                _movementTimeAtCurrentPosition += gameTime.ElapsedGameTime.Milliseconds;
 
                 if (_movementTimeAtCurrentPosition > _movementSpeed / _movementLength)
                 {
@@ -181,9 +188,6 @@ namespace MonoGameQuest.Sprites
                     _movement.Pop()();
                 }
             }
-
-            if (CurrentAnimation != null)
-                CurrentAnimation.Update(context.GameTime);
 
             // start walking if the sprite is moving and isn't already walking:
             if (wasMoving && (CurrentAnimation == null || CurrentAnimation.Type != AnimationType.Walk))

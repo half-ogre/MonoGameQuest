@@ -43,15 +43,13 @@
     <Compile Include="Map.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="MonoGameQuestComponent.cs" />
     <Compile Include="MonoGameQuestDrawableComponent.cs" />
     <Compile Include="PlayerCharacter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Sprites\PlayerCharacterSprite.cs" />
     <Compile Include="Sprites\ClothArmor.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="UpdateContext.cs">
       <SubType>Code</SubType>
     </Compile>
   </ItemGroup>

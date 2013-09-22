@@ -5,7 +5,8 @@ namespace MonoGameQuest.Sprites
 {
     public class ClothArmor : PlayerCharacterSprite
     {
-        public ClothArmor(ContentManager contentManager, Vector2 position, Map map) : base(
+        public ClothArmor(MonoGameQuest game, ContentManager contentManager, Vector2 position, Map map) : base(
+            game: game,
             contentManager: contentManager,
             spriteSheetName: "clotharmor", 
             height: 32, 
@@ -18,6 +19,7 @@ namespace MonoGameQuest.Sprites
             movementSpeed: Constants.DefaultMoveSpeed)
         {
             AddAnimation(new Animation(
+                game: Game,
                 sprite: this,
                 type: AnimationType.Idle,
                 direction: Direction.Up,
@@ -26,6 +28,7 @@ namespace MonoGameQuest.Sprites
                 speed: Constants.DefaultIdleSpeed));
 
             AddAnimation(new Animation(
+                game: Game,
                 sprite: this,
                 type: AnimationType.Idle,
                 direction: Direction.Down,
@@ -34,6 +37,7 @@ namespace MonoGameQuest.Sprites
                 speed: Constants.DefaultIdleSpeed));
 
             AddAnimation(new Animation(
+                game: Game,
                 sprite: this,
                 type: AnimationType.Idle,
                 direction: Direction.Left,
@@ -43,6 +47,7 @@ namespace MonoGameQuest.Sprites
                 flipHorizontally: true));
 
             AddAnimation(new Animation(
+                game: Game,
                 sprite: this,
                 type: AnimationType.Idle,
                 direction: Direction.Right,
@@ -51,6 +56,7 @@ namespace MonoGameQuest.Sprites
                 speed: Constants.DefaultIdleSpeed));
 
             AddAnimation(new Animation(
+                game: Game,
                 sprite: this,
                 type: AnimationType.Walk,
                 direction: Direction.Up,
@@ -59,6 +65,7 @@ namespace MonoGameQuest.Sprites
                 speed: Constants.DefaultWalkSpeed));
 
             AddAnimation(new Animation(
+                game: Game,
                 sprite: this,
                 type: AnimationType.Walk,
                 direction: Direction.Down,
@@ -67,6 +74,7 @@ namespace MonoGameQuest.Sprites
                 speed: Constants.DefaultWalkSpeed));
 
             AddAnimation(new Animation(
+                game: Game,
                 sprite: this,
                 type: AnimationType.Walk,
                 direction: Direction.Left,
@@ -76,6 +84,7 @@ namespace MonoGameQuest.Sprites
                 flipHorizontally: true));
 
             AddAnimation(new Animation(
+                game: Game,
                 sprite: this,
                 type: AnimationType.Walk,
                 direction: Direction.Right,
