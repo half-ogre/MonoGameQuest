@@ -55,6 +55,7 @@ namespace MonoGameQuest.Sprites
             _movement = new Stack<Action>();
             _spriteSheet = _contentManager.Load<Texture2D>(string.Concat(@"images\1\", _spriteSheetName));
 
+            DrawOrder = Constants.DrawOrder.Sprites;
             Orientation = Direction.Down;
         }
 

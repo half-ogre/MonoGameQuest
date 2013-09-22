@@ -10,7 +10,8 @@ namespace MonoGameQuest
         Texture2D _tileSheet;
 
         public Terrain(MonoGameQuest game) : base(game)
-        {   
+        {
+            DrawOrder = Constants.DrawOrder.Terrain;
         }
 
         public override void Draw(GameTime gameTime)

@@ -38,6 +38,7 @@
     <Compile Include="Animation.cs" />
     <Compile Include="AnimationType.cs" />
     <Compile Include="Constants.cs" />
+    <Compile Include="DebugInfo.cs" />
     <Compile Include="Direction.cs" />
     <Compile Include="Display.cs" />
     <Compile Include="MonoGameQuest.cs" />
