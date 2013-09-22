@@ -13,7 +13,6 @@ namespace MonoGameQuest
         readonly GraphicsDeviceManager _graphics;
         Map _map;
         PlayerCharacter _pc;
-        int _scale = 1;
         bool _showDebugInfo;
         SpriteBatch _spriteBatch;
         SpriteFont _spriteFont;
@@ -23,13 +22,16 @@ namespace MonoGameQuest
         public MonoGameQuest()
         {
             _graphics = new GraphicsDeviceManager(this);
+            
             Content.RootDirectory = @"Content";
+
+            Scale = 1;
         }
 
         protected override void Draw(GameTime gameTime)
         {
             _fpsCounter++;
-            string debugInfo = string.Format("fps: {0}", _fpsRate);
+            var debugInfo = string.Format("fps: {0}", _fpsRate);
 
             _spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
 
@@ -56,7 +58,7 @@ namespace MonoGameQuest
             var mapWidth = _map.Width*_map.TileWidth;
 
             DrawLine(spriteBatch, Vector2.Zero, new Vector2(mapWidth, 0));
-            for (int y = 1; y <= _map.DisplayHeight; y++)
+            for (var y = 1; y <= _map.DisplayHeight; y++)
             {
                 var adjustedY = y*_map.TileHeight;
                 DrawLine(spriteBatch, new Vector2(0, adjustedY-1), new Vector2(mapWidth, adjustedY-1));
@@ -94,12 +96,19 @@ namespace MonoGameQuest
                 0);
         }
 
+        protected override void Initialize()
+        {
+            _map = new Map(this);
+            Components.Add(_map);
+            
+            base.Initialize();
+        }
+
         protected override void LoadContent()
         {
             // Create a new SpriteBatch, which can be used to draw textures.
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
-            _map = new Map(Content);
             _pc = new PlayerCharacter(Content, new Vector2(0, 0), _map);
 
             _pixelForGrid = new Texture2D(GraphicsDevice, 1, 1);
@@ -108,12 +117,14 @@ namespace MonoGameQuest
             _spriteFont = Content.Load<SpriteFont>("Consolas");
         }
 
+        public int Scale { get; private set; }
+
         void SetScale(PresentationParameters presentationParameters)
         {
             if (presentationParameters.BackBufferWidth <= 1500 || presentationParameters.BackBufferHeight <= 870)
-                _scale = 2;
+                Scale = 2;
             else
-                _scale = 3;
+                Scale = 3;
         }
 
         protected override void Update(GameTime gameTime)
@@ -141,12 +152,11 @@ namespace MonoGameQuest
                 GameTime = gameTime,
                 Graphics = _graphics,
                 KeyboardState = Keyboard.GetState(),
-                MapScale = _scale,
+                MapScale = Scale,
                 MapTileHeight = _map.TileHeight,
                 MapTileWidth = _map.TileWidth
             };
 
-            _map.Update(context);
             _pc.Update(context);
 
             base.Update(gameTime);

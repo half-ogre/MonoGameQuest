@@ -43,6 +43,7 @@
     <Compile Include="Map.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="MonoGameQuestDrawableComponent.cs" />
     <Compile Include="PlayerCharacter.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

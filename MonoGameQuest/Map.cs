@@ -1,15 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using TiledSharp;
 
 namespace MonoGameQuest
 {
-    public class Map
+    public class Map : MonoGameQuestDrawableComponent
     {
-        readonly ContentManager _contentManager;
         int _displayHeight;
         int _displayWidth;
         readonly Dictionary<Vector2, List<int>> _terrain;
@@ -18,15 +16,13 @@ namespace MonoGameQuest
         readonly int _tileWidth;
         int _tilesheetColumns;
         readonly TmxMap _tmxMap;
-        int _scale = 1;
+        int _lastScale = 1;
         int _scaledTileHeight;
         int _scaledTileWidth;
 
-        public Map(ContentManager contentManager)
+        public Map(MonoGameQuest game) : base(game)
         {
-            _contentManager = contentManager;
-
-            _tileSheet = contentManager.Load<Texture2D>(@"images\1\tilesheet");
+            _tileSheet = Game.Content.Load<Texture2D>(@"images\1\tilesheet");
             
             _tmxMap = new TmxMap(@"Content\map\map.tmx");
 
@@ -92,8 +88,7 @@ namespace MonoGameQuest
 
         private Rectangle GetSourceRectangleForTileIndex(int index)
         {
-            int tilesheetRow = 1;
-            int tilesheetColumn;
+            var tilesheetRow = 1;
 
             while (index > _tilesheetColumns)
             {
@@ -101,7 +96,7 @@ namespace MonoGameQuest
                 tilesheetRow++;
             }
 
-            tilesheetColumn = index;
+            var tilesheetColumn = index;
 
             return new Rectangle(
                 x: (tilesheetColumn - 1) * _scaledTileWidth,
@@ -112,33 +107,30 @@ namespace MonoGameQuest
 
         public int Height { get { return _tmxMap.Height; } }
 
-        void SetScale(int scale, int displayHeight, int displayWidth)
+        void UpdateScale()
         {
-            _scale = scale;
+            _lastScale = Game.Scale;
 
-            _tileSheet = _contentManager.Load<Texture2D>(string.Concat(@"images\", _scale, @"\tilesheet"));
+            _tileSheet = Game.Content.Load<Texture2D>(string.Concat(@"images\", _lastScale, @"\tilesheet"));
 
-            _scaledTileHeight = _tileHeight * _scale;
-            _scaledTileWidth = _tileWidth * _scale;
+            _scaledTileHeight = _tileHeight * _lastScale;
+            _scaledTileWidth = _tileWidth * _lastScale;
 
             _tilesheetColumns = _tileSheet.Width / _scaledTileWidth;
 
             // TODO: this assumes the display size a multiple of the tile size. Eventually we'll need to handle the offset.
-            _displayHeight = displayHeight / _scaledTileHeight;
-            _displayWidth = displayWidth / _scaledTileWidth;
+            _displayHeight = GraphicsDevice.PresentationParameters.BackBufferHeight / _scaledTileHeight;
+            _displayWidth = GraphicsDevice.PresentationParameters.BackBufferWidth / _scaledTileWidth;
         }
 
         public int TileHeight { get { return _scaledTileHeight; } }
 
         public int TileWidth { get { return _scaledTileWidth; } }
 
-        public void Update(UpdateContext context)
+        public override void Update(GameTime gameTime)
         {
-            if (context.MapScale != _scale)
-                SetScale(
-                    context.MapScale, 
-                    context.Graphics.GraphicsDevice.PresentationParameters.BackBufferHeight,
-                    context.Graphics.GraphicsDevice.PresentationParameters.BackBufferWidth);
+            if (_lastScale != Game.Scale)
+                UpdateScale();
         }
 
         public int Width { get { return _tmxMap.Width; } }
