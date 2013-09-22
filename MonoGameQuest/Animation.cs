@@ -71,8 +71,8 @@ namespace MonoGameQuest
                 adjustedY = zeroBasedDisplayMidpointY;
 
             // adjust sprite position for the specified offset
-            adjustedX += (adjustedX * _sprite.Map.TileWidth) + _sprite.OffsetX;
-            adjustedY += (adjustedY * _sprite.Map.TileHeight) + _sprite.OffsetY;
+            adjustedX = (adjustedX * _sprite.Map.TileWidth) + _sprite.OffsetX;
+            adjustedY = (adjustedY * _sprite.Map.TileHeight) + _sprite.OffsetY;
 
             var adjustedPosition = new Vector2(
                 adjustedX,
