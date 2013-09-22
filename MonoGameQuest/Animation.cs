@@ -55,18 +55,20 @@ namespace MonoGameQuest
             float zeroBasedDisplayHeight = _sprite.Map.DisplayHeight - 1f;
             float zeroBasedDisplayMidpointX = (_sprite.Map.DisplayWidth - 1f) / 2f;
             float zeroBasedDisplayMidpointY = (_sprite.Map.DisplayHeight - 1f) / 2f;
+            float zeroBasedMapWidth = _sprite.Map.Width - 1f;
+            float zeroBasedMapHeight = _sprite.Map.Height - 1f;
             
             // adjust sprite position to center, unless the sprite is at the map's edge:
             if (_sprite.Position.X < zeroBasedDisplayMidpointX)
                 adjustedX = _sprite.Position.X;
-            else if (_sprite.Position.X > _sprite.Map.Width - zeroBasedDisplayMidpointX)
-                adjustedX = zeroBasedDisplayWidth - (_sprite.Map.Width - _sprite.Position.X);
+            else if (_sprite.Position.X > zeroBasedMapWidth - zeroBasedDisplayMidpointX)
+                adjustedX = zeroBasedDisplayWidth - (zeroBasedMapWidth - _sprite.Position.X);
             else
                 adjustedX = zeroBasedDisplayMidpointX;
             if (_sprite.Position.Y < zeroBasedDisplayMidpointY)
                 adjustedY = _sprite.Position.Y;
-            else if (_sprite.Position.Y > _sprite.Map.Height - zeroBasedDisplayMidpointY)
-                adjustedY = zeroBasedDisplayHeight - (_sprite.Map.Height - _sprite.Position.Y);
+            else if (_sprite.Position.Y > zeroBasedMapHeight - zeroBasedDisplayMidpointY)
+                adjustedY = zeroBasedDisplayHeight - (zeroBasedMapHeight - _sprite.Position.Y);
             else
                 adjustedY = zeroBasedDisplayMidpointY;
 
