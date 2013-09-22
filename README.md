@@ -1,1 +1,28 @@
-This will eventually be a [MonoGame](http://www.monogame.net/) port of [BrowserQuest](http://browserquest.mozilla.org/). Right now, it's not much of anything.
+# _MonoGameQuest_
+
+This is a work-in-progress [MonoGame](http://www.monogame.net/) port of [BrowserQuest](http://browserquest.mozilla.org/). The idea is to make a game that is visually and behaviorally identical to BrowserQuest, but made as if it was an original MonoGame game (i.e., not a straight port).
+
+## Getting Started
+
+### Windows (using Visual Studio 2012)
+1. [Download and install MonoGame](http://www.monogame.net/downloads)
+1. Install `oalinst.exe` (look in `%PROGRAMFILES(x86)%\MonoGame\v3.0`)
+1. Clone the _MonoGameQuest_ source code
+1. F5
+
+### Mac
+**TBD**
+
+## Helping Out
+
+Want to help? Great! There's lots to do before we have even a working game.
+
+Pick one of the following issues and leave a comment there saying you'd like to work on it. I'll help you get started.
+
+- [Make the rendered part of the map move with the player's sprite](https://github.com/half-ogre/monogame-quest/issues/1)
+- [Use the mouse for movement instead of the keyboard](https://github.com/half-ogre/monogame-quest/issues/2)
+- [Display and move in an area at a time instead of the whole map](https://github.com/half-ogre/monogame-quest/issues/3)
+- [Add terrain collision detection](https://github.com/half-ogre/monogame-quest/issues/4)
+- [Add doors and portals](https://github.com/half-ogre/monogame-quest/issues/5)
+
+If you'd like to help with something else, please open an issue first so we can talk about it.
