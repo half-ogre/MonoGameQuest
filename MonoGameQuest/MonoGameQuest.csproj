@@ -39,7 +39,7 @@
     <Compile Include="AnimationType.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="Direction.cs" />
-    <Compile Include="Game.cs" />
+    <Compile Include="MonoGameQuest.cs" />
     <Compile Include="Map.cs">
       <SubType>Code</SubType>
     </Compile>

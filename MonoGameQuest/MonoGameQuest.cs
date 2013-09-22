@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework.Input;
 
 namespace MonoGameQuest
 {
-    public class Game : Microsoft.Xna.Framework.Game
+    public class MonoGameQuest : Game
     {
         int _fpsCounter;
         TimeSpan _fpsElapsedTime = TimeSpan.Zero;
@@ -20,7 +20,7 @@ namespace MonoGameQuest
         Texture2D _pixelForGrid;
         bool _tildeKeyWasPressed;
 
-        public Game()
+        public MonoGameQuest()
         {
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = @"Content";

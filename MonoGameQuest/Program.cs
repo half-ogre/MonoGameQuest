@@ -18,7 +18,7 @@ namespace MonoGameQuest
         [STAThread]
         static void Main()
         {
-            using (var game = new Game())
+            using (var game = new MonoGameQuest())
                 game.Run();
         }
     }
