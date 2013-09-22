@@ -19,7 +19,6 @@ namespace MonoGameQuest.Sprites
             movementSpeed: Constants.DefaultMoveSpeed)
         {
             AddAnimation(new Animation(
-                game: Game,
                 sprite: this,
                 type: AnimationType.Idle,
                 direction: Direction.Up,
@@ -28,7 +27,6 @@ namespace MonoGameQuest.Sprites
                 speed: Constants.DefaultIdleSpeed));
 
             AddAnimation(new Animation(
-                game: Game,
                 sprite: this,
                 type: AnimationType.Idle,
                 direction: Direction.Down,
@@ -37,7 +35,6 @@ namespace MonoGameQuest.Sprites
                 speed: Constants.DefaultIdleSpeed));
 
             AddAnimation(new Animation(
-                game: Game,
                 sprite: this,
                 type: AnimationType.Idle,
                 direction: Direction.Left,
@@ -47,7 +44,6 @@ namespace MonoGameQuest.Sprites
                 flipHorizontally: true));
 
             AddAnimation(new Animation(
-                game: Game,
                 sprite: this,
                 type: AnimationType.Idle,
                 direction: Direction.Right,
@@ -56,7 +52,6 @@ namespace MonoGameQuest.Sprites
                 speed: Constants.DefaultIdleSpeed));
 
             AddAnimation(new Animation(
-                game: Game,
                 sprite: this,
                 type: AnimationType.Walk,
                 direction: Direction.Up,
@@ -65,7 +60,6 @@ namespace MonoGameQuest.Sprites
                 speed: Constants.DefaultWalkSpeed));
 
             AddAnimation(new Animation(
-                game: Game,
                 sprite: this,
                 type: AnimationType.Walk,
                 direction: Direction.Down,
@@ -74,7 +68,6 @@ namespace MonoGameQuest.Sprites
                 speed: Constants.DefaultWalkSpeed));
 
             AddAnimation(new Animation(
-                game: Game,
                 sprite: this,
                 type: AnimationType.Walk,
                 direction: Direction.Left,
@@ -84,7 +77,6 @@ namespace MonoGameQuest.Sprites
                 flipHorizontally: true));
 
             AddAnimation(new Animation(
-                game: Game,
                 sprite: this,
                 type: AnimationType.Walk,
                 direction: Direction.Right,

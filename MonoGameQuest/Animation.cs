@@ -5,21 +5,20 @@ using MonoGameQuest.Sprites;
 
 namespace MonoGameQuest
 {
-    public class Animation : MonoGameQuestDrawableComponent
+    public class Animation
     {
         int _currentIndex;
         int _timeAtCurrentIndex;
         readonly PlayerCharacterSprite _sprite;
 
         public Animation(
-            MonoGameQuest game,
             PlayerCharacterSprite sprite,
             AnimationType type,
             Direction direction,
             int row,
             int length,
             int speed,
-            bool flipHorizontally = false) : base(game)
+            bool flipHorizontally = false)
         {
             _sprite = sprite;
             if (row < 0)
@@ -41,7 +40,7 @@ namespace MonoGameQuest
 
         public Direction Direction { get; private set; }
 
-        public override void Draw(GameTime gameTime)
+        public void Draw(SpriteBatch spriteBatch)
         {
             var sourceRectangle = new Rectangle(
                 _currentIndex * _sprite.Width,
@@ -80,9 +79,8 @@ namespace MonoGameQuest
             var adjustedPosition = new Vector2(
                 adjustedX,
                 adjustedY);
-
-            SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
-            SpriteBatch.Draw(
+    
+            spriteBatch.Draw(
                 texture: _sprite.SpriteSheet,
                 position: adjustedPosition,
                 sourceRectangle: sourceRectangle,
@@ -92,7 +90,7 @@ namespace MonoGameQuest
                 scale: Vector2.One,
                 effect: FlipHorizontally ? SpriteEffects.FlipHorizontally : SpriteEffects.None,
                 depth: 0f);
-            SpriteBatch.End();
+            spriteBatch.End();
         }
         
         public bool FlipHorizontally { get; private set; }
@@ -111,7 +109,7 @@ namespace MonoGameQuest
 
         public AnimationType Type { get; private set; }
 
-        public override void Update(GameTime gameTime)
+        public void Update(GameTime gameTime)
         {
             _timeAtCurrentIndex += gameTime.ElapsedGameTime.Milliseconds;
 

@@ -6,7 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace MonoGameQuest.Sprites
 {
-    public abstract class PlayerCharacterSprite : MonoGameQuestComponent
+    public abstract class PlayerCharacterSprite : MonoGameQuestDrawableComponent
     {
         readonly Dictionary<Tuple<AnimationType, Direction>, Animation> _animations;
         readonly ContentManager _contentManager;
@@ -68,10 +68,6 @@ namespace MonoGameQuest.Sprites
             if (_animations.ContainsKey(key))
                 throw new ArgumentException("An animation with the specified type and direction has already been added.", "animation");
 
-            animation.Enabled = false;
-            animation.Visible = false;
-            Game.Components.Add(animation);
-
             _animations.Add(key, animation);
         }
 
@@ -83,19 +79,23 @@ namespace MonoGameQuest.Sprites
             if (!_animations.TryGetValue(key, out animation))
                 throw new InvalidOperationException("No animation has been added for the specified type and key.");
 
-            if (CurrentAnimation != null)
-            {
-                CurrentAnimation.Enabled = false;
-                CurrentAnimation.Visible = false;
-            }
-
             CurrentAnimation = animation;
             CurrentAnimation.Reset();
-            CurrentAnimation.Enabled = true;
-            CurrentAnimation.Visible = true;
         }
 
         public Animation CurrentAnimation { get; protected set; }
+
+        public override void Draw(GameTime gameTime)
+        {
+            if (CurrentAnimation == null)
+                return;
+            
+            SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
+
+            CurrentAnimation.Draw(SpriteBatch);
+
+            SpriteBatch.End();
+        }
 
         public int Height { get { return _scaledHeight; } }
 
@@ -188,6 +188,9 @@ namespace MonoGameQuest.Sprites
                     _movement.Pop()();
                 }
             }
+
+            if (CurrentAnimation != null)
+                CurrentAnimation.Update(gameTime);
 
             // start walking if the sprite is moving and isn't already walking:
             if (wasMoving && (CurrentAnimation == null || CurrentAnimation.Type != AnimationType.Walk))
