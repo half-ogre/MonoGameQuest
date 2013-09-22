@@ -1,20 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using TiledSharp;
 
 namespace MonoGameQuest
 {
-    public class Map : MonoGameQuestDrawableComponent
+    public class Map : MonoGameQuestComponent
     {
         int _displayHeight;
         int _displayWidth;
         readonly Dictionary<Vector2, List<int>> _terrain;
         readonly int _tileHeight;
-        Texture2D _tileSheet;
         readonly int _tileWidth;
-        int _tilesheetColumns;
         readonly TmxMap _tmxMap;
         int _lastScale = 1;
         int _scaledTileHeight;
@@ -22,14 +19,10 @@ namespace MonoGameQuest
 
         public Map(MonoGameQuest game) : base(game)
         {
-            _tileSheet = Game.Content.Load<Texture2D>(@"images\1\tilesheet");
-            
             _tmxMap = new TmxMap(@"Content\map\map.tmx");
 
             _tileHeight = _scaledTileHeight = _tmxMap.TileHeight;
             _tileWidth = _scaledTileWidth = _tmxMap.TileWidth;
-            
-            _tilesheetColumns = _tileSheet.Width / _scaledTileWidth;
             
             _terrain = new Dictionary<Vector2, List<int>>();
             
@@ -51,81 +44,22 @@ namespace MonoGameQuest
                     }
                 }
             }
+
+            BackgroundColor = new Color(
+                r: _tmxMap.BackgroundColor.R,
+                g: _tmxMap.BackgroundColor.G,
+                b: _tmxMap.BackgroundColor.R);
         }
+
+        public Color BackgroundColor { get; private set; }
 
         public int DisplayHeight { get { return _displayHeight; } }
 
         public int DisplayWidth { get { return _displayWidth; } }
 
-        public override void Draw(GameTime gameTime)
-        {
-            if (_displayHeight == 0 || _displayWidth == 0)
-                return; // the map hasn't been updated even once, and so can't be drawn
-
-            SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
-            
-            SpriteBatch.GraphicsDevice.Clear(new Color(
-                r: _tmxMap.BackgroundColor.R,
-                g: _tmxMap.BackgroundColor.G,
-                b: _tmxMap.BackgroundColor.R));
-
-            for (var x = 0; x < _displayWidth; x++)
-            {
-                for (var y = 0; y < _displayHeight; y++)
-                {
-                    var mapIndex = new Vector2(x, y);
-                    List<int> tileIndices;
-                    if (_terrain.TryGetValue(mapIndex, out tileIndices))
-                    {
-                        foreach (var tileIndex in tileIndices)
-                            SpriteBatch.Draw(
-                                texture: _tileSheet,
-                                position: new Vector2(x * _scaledTileWidth, y * _scaledTileHeight),
-                                sourceRectangle: GetSourceRectangleForTileIndex(tileIndex),
-                                color: Color.White /* tint */);
-                    }
-                }
-            }
-
-            SpriteBatch.End();
-        }
-
-        private Rectangle GetSourceRectangleForTileIndex(int index)
-        {
-            var tilesheetRow = 1;
-
-            while (index > _tilesheetColumns)
-            {
-                index -= _tilesheetColumns;
-                tilesheetRow++;
-            }
-
-            var tilesheetColumn = index;
-
-            return new Rectangle(
-                x: (tilesheetColumn - 1) * _scaledTileWidth,
-                y: (tilesheetRow - 1) * _scaledTileHeight,
-                width: _scaledTileWidth,
-                height: _scaledTileHeight);
-        }
-
         public int Height { get { return _tmxMap.Height; } }
 
-        void UpdateScale()
-        {
-            _lastScale = Game.Scale;
-
-            _tileSheet = Game.Content.Load<Texture2D>(string.Concat(@"images\", _lastScale, @"\tilesheet"));
-
-            _scaledTileHeight = _tileHeight * _lastScale;
-            _scaledTileWidth = _tileWidth * _lastScale;
-
-            _tilesheetColumns = _tileSheet.Width / _scaledTileWidth;
-
-            // TODO: this assumes the display size a multiple of the tile size. Eventually we'll need to handle the offset.
-            _displayHeight = GraphicsDevice.PresentationParameters.BackBufferHeight / _scaledTileHeight;
-            _displayWidth = GraphicsDevice.PresentationParameters.BackBufferWidth / _scaledTileWidth;
-        }
+        public Dictionary<Vector2, List<int>> Locations { get { return _terrain; } }
 
         public int TileHeight { get { return _scaledTileHeight; } }
 
@@ -135,6 +69,18 @@ namespace MonoGameQuest
         {
             if (_lastScale != Game.Scale)
                 UpdateScale();
+        }
+
+        void UpdateScale()
+        {
+            _lastScale = Game.Scale;
+
+            _scaledTileHeight = _tileHeight * _lastScale;
+            _scaledTileWidth = _tileWidth * _lastScale;
+
+            // TODO: this assumes the display size a multiple of the tile size. Eventually we'll need to handle the offset.
+            _displayHeight = GraphicsDevice.PresentationParameters.BackBufferHeight / _scaledTileHeight;
+            _displayWidth = GraphicsDevice.PresentationParameters.BackBufferWidth / _scaledTileWidth;
         }
 
         public int Width { get { return _tmxMap.Width; } }

@@ -96,6 +96,7 @@ namespace MonoGameQuest
             Map = new Map(this);
             Components.Add(Map);
 
+            Components.Add(new Terrain(this));
             Components.Add(new PlayerCharacter(this));
             
             base.Initialize();

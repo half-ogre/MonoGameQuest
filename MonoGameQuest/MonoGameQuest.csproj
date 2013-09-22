@@ -52,6 +52,7 @@
     <Compile Include="Sprites\ClothArmor.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Terrain.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Lidgren.Network, Version=2011.3.12.0, Culture=neutral, processorArchitecture=MSIL">
