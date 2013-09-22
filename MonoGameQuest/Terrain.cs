@@ -15,16 +15,16 @@ namespace MonoGameQuest
 
         public override void Draw(GameTime gameTime)
         {
-            if (Game.Map.DisplayHeight == 0 || Game.Map.DisplayWidth == 0)
+            if (Game.Map.DisplayCoordinateHeight == 0 || Game.Map.DisplayCoordinateWidth == 0)
                 return; // the map hasn't been updated even once, and so can't be drawn
 
             SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
 
             SpriteBatch.GraphicsDevice.Clear(Game.Map.BackgroundColor);
 
-            for (var x = 0; x < Game.Map.DisplayWidth; x++)
+            for (var x = 0; x < Game.Map.DisplayCoordinateWidth; x++)
             {
-                for (var y = 0; y < Game.Map.DisplayHeight; y++)
+                for (var y = 0; y < Game.Map.DisplayCoordinateHeight; y++)
                 {
                     var mapIndex = new Vector2(x, y);
                     List<int> tileIndices;
@@ -33,7 +33,7 @@ namespace MonoGameQuest
                         foreach (var tileIndex in tileIndices)
                             SpriteBatch.Draw(
                                 texture: _tileSheet,
-                                position: new Vector2(x * Game.Map.TileWidth, y * Game.Map.TileHeight),
+                                position: new Vector2(x * Game.Map.ScaledTilePixelWidth, y * Game.Map.ScaledTilePixelHeight),
                                 sourceRectangle: GetSourceRectangleForTileIndex(tileIndex),
                                 color: Color.White /* tint */);
                     }
@@ -45,7 +45,7 @@ namespace MonoGameQuest
 
         private Rectangle GetSourceRectangleForTileIndex(int index)
         {
-            var tileSheetColumns = _tileSheet.Width/Game.Map.TileWidth;
+            var tileSheetColumns = _tileSheet.Width/Game.Map.ScaledTilePixelWidth;
             var tilesheetRow = 1;
 
             while (index > tileSheetColumns)
@@ -57,10 +57,10 @@ namespace MonoGameQuest
             var tilesheetColumn = index;
 
             return new Rectangle(
-                x: (tilesheetColumn - 1) * Game.Map.TileWidth,
-                y: (tilesheetRow - 1) * Game.Map.TileHeight,
-                width: Game.Map.TileWidth,
-                height: Game.Map.TileHeight);
+                x: (tilesheetColumn - 1) * Game.Map.ScaledTilePixelWidth,
+                y: (tilesheetRow - 1) * Game.Map.ScaledTilePixelHeight,
+                width: Game.Map.ScaledTilePixelWidth,
+                height: Game.Map.ScaledTilePixelHeight);
         }
 
         protected override void LoadContent()

@@ -7,26 +7,22 @@ namespace MonoGameQuest
 {
     public class Map : MonoGameQuestComponent
     {
-        int _displayHeight;
-        int _displayWidth;
-        readonly Dictionary<Vector2, List<int>> _terrain;
-        readonly int _tileHeight;
-        readonly int _tileWidth;
-        readonly TmxMap _tmxMap;
         int _lastScale = 1;
-        int _scaledTileHeight;
-        int _scaledTileWidth;
+        readonly Dictionary<Vector2, List<int>> _locations;
 
         public Map(MonoGameQuest game) : base(game)
         {
-            _tmxMap = new TmxMap(@"Content\map\map.tmx");
+            var tmxMap = new TmxMap(@"Content\map\map.tmx");
 
-            _tileHeight = _scaledTileHeight = _tmxMap.TileHeight;
-            _tileWidth = _scaledTileWidth = _tmxMap.TileWidth;
+            CoordinateHeight = tmxMap.Height;
+            CoordinateWidth = tmxMap.Width;
+
+            OriginalTilePixelHeight = ScaledTilePixelHeight = tmxMap.TileHeight;
+            OriginalTilePixelWidth = ScaledTilePixelWidth = tmxMap.TileWidth;
             
-            _terrain = new Dictionary<Vector2, List<int>>();
+            _locations = new Dictionary<Vector2, List<int>>();
             
-            foreach (var layer in _tmxMap.Layers)
+            foreach (var layer in tmxMap.Layers)
             {
                 if (!layer.Visible || layer.Name.Equals("entities", StringComparison.OrdinalIgnoreCase))
                     continue;
@@ -37,33 +33,39 @@ namespace MonoGameQuest
                     {
                         var position = new Vector2(tile.X, tile.Y);
 
-                        if (!_terrain.ContainsKey(position))
-                            _terrain.Add(position, new List<int>());
+                        if (!_locations.ContainsKey(position))
+                            _locations.Add(position, new List<int>());
 
-                        _terrain[position].Add(tile.Gid);
+                        _locations[position].Add(tile.Gid);
                     }
                 }
             }
 
             BackgroundColor = new Color(
-                r: _tmxMap.BackgroundColor.R,
-                g: _tmxMap.BackgroundColor.G,
-                b: _tmxMap.BackgroundColor.R);
+                r: tmxMap.BackgroundColor.R,
+                g: tmxMap.BackgroundColor.G,
+                b: tmxMap.BackgroundColor.R);
         }
 
         public Color BackgroundColor { get; private set; }
 
-        public int DisplayHeight { get { return _displayHeight; } }
+        public int CoordinateHeight { get; private set; }
 
-        public int DisplayWidth { get { return _displayWidth; } }
+        public int CoordinateWidth { get; private set; }
 
-        public int Height { get { return _tmxMap.Height; } }
+        public int DisplayCoordinateHeight { get; private set; }
 
-        public Dictionary<Vector2, List<int>> Locations { get { return _terrain; } }
+        public int DisplayCoordinateWidth { get; private set; }
 
-        public int TileHeight { get { return _scaledTileHeight; } }
+        public Dictionary<Vector2, List<int>> Locations { get { return _locations; } }
 
-        public int TileWidth { get { return _scaledTileWidth; } }
+        public int OriginalTilePixelHeight { get; private set; }
+        
+        public int OriginalTilePixelWidth { get; private set; }
+
+        public int ScaledTilePixelHeight { get; private set; }
+
+        public int ScaledTilePixelWidth { get; private set; }
 
         public override void Update(GameTime gameTime)
         {
@@ -75,14 +77,12 @@ namespace MonoGameQuest
         {
             _lastScale = Game.Scale;
 
-            _scaledTileHeight = _tileHeight * _lastScale;
-            _scaledTileWidth = _tileWidth * _lastScale;
+            ScaledTilePixelHeight = OriginalTilePixelHeight * Game.Scale;
+            ScaledTilePixelWidth = OriginalTilePixelWidth * Game.Scale;
 
             // TODO: this assumes the display size a multiple of the tile size. Eventually we'll need to handle the offset.
-            _displayHeight = GraphicsDevice.PresentationParameters.BackBufferHeight / _scaledTileHeight;
-            _displayWidth = GraphicsDevice.PresentationParameters.BackBufferWidth / _scaledTileWidth;
+            DisplayCoordinateHeight = GraphicsDevice.PresentationParameters.BackBufferHeight / ScaledTilePixelHeight;
+            DisplayCoordinateWidth = GraphicsDevice.PresentationParameters.BackBufferWidth / ScaledTilePixelWidth;
         }
-
-        public int Width { get { return _tmxMap.Width; } }
     }
 }

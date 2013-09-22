@@ -52,12 +52,12 @@ namespace MonoGameQuest
             float adjustedX;
             float adjustedY;
 
-            var zeroBasedDisplayWidth = _sprite.Map.DisplayWidth - 1f;
-            var zeroBasedDisplayHeight = _sprite.Map.DisplayHeight - 1f;
-            var zeroBasedDisplayMidpointX = (_sprite.Map.DisplayWidth - 1f) / 2f;
-            var zeroBasedDisplayMidpointY = (_sprite.Map.DisplayHeight - 1f) / 2f;
-            var zeroBasedMapWidth = _sprite.Map.Width - 1f;
-            var zeroBasedMapHeight = _sprite.Map.Height - 1f;
+            var zeroBasedDisplayWidth = _sprite.Map.DisplayCoordinateWidth - 1f;
+            var zeroBasedDisplayHeight = _sprite.Map.DisplayCoordinateHeight - 1f;
+            var zeroBasedDisplayMidpointX = (_sprite.Map.DisplayCoordinateWidth - 1f) / 2f;
+            var zeroBasedDisplayMidpointY = (_sprite.Map.DisplayCoordinateHeight - 1f) / 2f;
+            var zeroBasedMapWidth = _sprite.Map.CoordinateWidth - 1f;
+            var zeroBasedMapHeight = _sprite.Map.CoordinateHeight - 1f;
             
             // adjust sprite position to center, unless the sprite is at the map's edge:
             if (_sprite.Position.X < zeroBasedDisplayMidpointX)
@@ -74,8 +74,8 @@ namespace MonoGameQuest
                 adjustedY = zeroBasedDisplayMidpointY;
 
             // adjust sprite position for the specified offset
-            adjustedX = (adjustedX * _sprite.Map.TileWidth) + _sprite.OffsetX;
-            adjustedY = (adjustedY * _sprite.Map.TileHeight) + _sprite.OffsetY;
+            adjustedX = (adjustedX * _sprite.Map.ScaledTilePixelWidth) + _sprite.OffsetX;
+            adjustedY = (adjustedY * _sprite.Map.ScaledTilePixelHeight) + _sprite.OffsetY;
 
             var adjustedPosition = new Vector2(
                 adjustedX,

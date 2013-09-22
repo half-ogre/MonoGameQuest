@@ -49,21 +49,21 @@ namespace MonoGameQuest
 
         void DrawGrid(SpriteBatch spriteBatch)
         {
-            var mapHeight = Map.Height * Map.TileHeight;
-            var mapWidth = Map.Width*Map.TileWidth;
+            var mapHeight = Map.CoordinateHeight * Map.ScaledTilePixelHeight;
+            var mapWidth = Map.CoordinateWidth*Map.ScaledTilePixelWidth;
 
             DrawLine(spriteBatch, Vector2.Zero, new Vector2(mapWidth, 0));
-            for (var y = 1; y <= Map.DisplayHeight; y++)
+            for (var y = 1; y <= Map.DisplayCoordinateHeight; y++)
             {
-                var adjustedY = y*Map.TileHeight;
+                var adjustedY = y*Map.ScaledTilePixelHeight;
                 DrawLine(spriteBatch, new Vector2(0, adjustedY-1), new Vector2(mapWidth, adjustedY-1));
                 DrawLine(spriteBatch, new Vector2(0, adjustedY), new Vector2(mapWidth, adjustedY));
             }
 
             DrawLine(spriteBatch, Vector2.Zero, new Vector2(0, mapHeight));
-            for (var x = 1; x <= Map.DisplayWidth; x++)
+            for (var x = 1; x <= Map.DisplayCoordinateWidth; x++)
             {
-                var adjustedX = x * Map.TileWidth;
+                var adjustedX = x * Map.ScaledTilePixelWidth;
                 DrawLine(spriteBatch, new Vector2(adjustedX-1, 0), new Vector2(adjustedX-1, mapHeight));
                 DrawLine(spriteBatch, new Vector2(adjustedX, 0), new Vector2(adjustedX, mapHeight));
             }

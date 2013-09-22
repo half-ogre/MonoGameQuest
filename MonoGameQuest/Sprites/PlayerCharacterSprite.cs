@@ -121,7 +121,7 @@ namespace MonoGameQuest.Sprites
             var newY = _position.Y + offsetY;
 
             // don't let the sprite move off the map:
-            if (newX < 0 || newX > Map.Width - 1 || newY < 0 || newY > Map.Height - 1)
+            if (newX < 0 || newX > Map.CoordinateWidth - 1 || newY < 0 || newY > Map.CoordinateHeight - 1)
                 return;
 
             _movementTimeAtCurrentPosition = 0;
