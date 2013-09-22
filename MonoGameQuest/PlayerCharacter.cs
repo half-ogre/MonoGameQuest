@@ -10,6 +10,7 @@ namespace MonoGameQuest
 
         public PlayerCharacter(MonoGameQuest game) : base(game)
         {
+            UpdateOrder = Constants.UpdateOrder.Models;
         }
 
         public override void Initialize()

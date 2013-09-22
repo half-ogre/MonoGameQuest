@@ -12,20 +12,21 @@ namespace MonoGameQuest
         public Terrain(MonoGameQuest game) : base(game)
         {
             DrawOrder = Constants.DrawOrder.Terrain;
+            UpdateOrder = Constants.UpdateOrder.Terrain;
         }
 
         public override void Draw(GameTime gameTime)
         {
-            if (Game.Map.DisplayCoordinateHeight == 0 || Game.Map.DisplayCoordinateWidth == 0)
+            if (Game.Display.DisplayCoordinateHeight == 0 || Game.Display.DisplayCoordinateWidth == 0)
                 return; // the map hasn't been updated even once, and so can't be drawn
 
             SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
 
             SpriteBatch.GraphicsDevice.Clear(Game.Map.BackgroundColor);
 
-            for (var x = 0; x < Game.Map.DisplayCoordinateWidth; x++)
+            for (var x = 0; x < Game.Display.DisplayCoordinateWidth; x++)
             {
-                for (var y = 0; y < Game.Map.DisplayCoordinateHeight; y++)
+                for (var y = 0; y < Game.Display.DisplayCoordinateHeight; y++)
                 {
                     var mapIndex = new Vector2(x, y);
                     List<int> tileIndices;
@@ -73,13 +74,13 @@ namespace MonoGameQuest
 
         public override void Update(GameTime gameTime)
         {
-            if (_lastScale != Game.Scale)
+            if (_lastScale != Game.Display.Scale)
                 UpdateScale();
         }
 
         void UpdateScale()
         {
-            _lastScale = Game.Scale;
+            _lastScale = Game.Display.Scale;
 
             _tileSheet = Game.Content.Load<Texture2D>(string.Concat(@"images\", _lastScale, @"\tilesheet"));
         }

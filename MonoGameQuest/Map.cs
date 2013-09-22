@@ -45,17 +45,14 @@ namespace MonoGameQuest
                 r: tmxMap.BackgroundColor.R,
                 g: tmxMap.BackgroundColor.G,
                 b: tmxMap.BackgroundColor.R);
+            UpdateOrder = Constants.UpdateOrder.Map;
         }
 
         public Color BackgroundColor { get; private set; }
 
         public int CoordinateHeight { get; private set; }
 
-        public int CoordinateWidth { get; private set; }
-
-        public int DisplayCoordinateHeight { get; private set; }
-
-        public int DisplayCoordinateWidth { get; private set; }
+        public int CoordinateWidth { get; private set; }        
 
         public Dictionary<Vector2, List<int>> Locations { get { return _locations; } }
 
@@ -69,20 +66,16 @@ namespace MonoGameQuest
 
         public override void Update(GameTime gameTime)
         {
-            if (_lastScale != Game.Scale)
+            if (_lastScale != Game.Display.Scale)
                 UpdateScale();
         }
 
         void UpdateScale()
         {
-            _lastScale = Game.Scale;
+            _lastScale = Game.Display.Scale;
 
-            ScaledTilePixelHeight = OriginalTilePixelHeight * Game.Scale;
-            ScaledTilePixelWidth = OriginalTilePixelWidth * Game.Scale;
-
-            // TODO: this assumes the display size a multiple of the tile size. Eventually we'll need to handle the offset.
-            DisplayCoordinateHeight = GraphicsDevice.PresentationParameters.BackBufferHeight / ScaledTilePixelHeight;
-            DisplayCoordinateWidth = GraphicsDevice.PresentationParameters.BackBufferWidth / ScaledTilePixelWidth;
+            ScaledTilePixelHeight = OriginalTilePixelHeight * Game.Display.Scale;
+            ScaledTilePixelWidth = OriginalTilePixelWidth * Game.Display.Scale;   
         }
     }
 }

@@ -57,6 +57,7 @@ namespace MonoGameQuest.Sprites
 
             DrawOrder = Constants.DrawOrder.Sprites;
             Orientation = Direction.Down;
+            UpdateOrder = Constants.UpdateOrder.Sprites;
         }
 
         public void AddAnimation(Animation animation)
@@ -157,7 +158,7 @@ namespace MonoGameQuest.Sprites
 
         void SetScale()
         {
-            _scale = Game.Scale;
+            _scale = Game.Display.Scale;
 
             _spriteSheet = _contentManager.Load<Texture2D>(string.Concat(@"images\", _scale, @"\", _spriteSheetName));
 
@@ -172,7 +173,7 @@ namespace MonoGameQuest.Sprites
 
         public override void Update(GameTime gameTime)
         {
-            if (Game.Scale != _scale)
+            if (Game.Display.Scale != _scale)
                 SetScale();
 
             // stash these values because they will change during update, 

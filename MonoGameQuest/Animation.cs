@@ -51,10 +51,10 @@ namespace MonoGameQuest
             float adjustedX;
             float adjustedY;
 
-            var zeroBasedDisplayWidth = _sprite.Map.DisplayCoordinateWidth - 1f;
-            var zeroBasedDisplayHeight = _sprite.Map.DisplayCoordinateHeight - 1f;
-            var zeroBasedDisplayMidpointX = (_sprite.Map.DisplayCoordinateWidth - 1f) / 2f;
-            var zeroBasedDisplayMidpointY = (_sprite.Map.DisplayCoordinateHeight - 1f) / 2f;
+            var zeroBasedDisplayWidth = _sprite.Game.Display.DisplayCoordinateWidth - 1f;
+            var zeroBasedDisplayHeight = _sprite.Game.Display.DisplayCoordinateHeight - 1f;
+            var zeroBasedDisplayMidpointX = (_sprite.Game.Display.DisplayCoordinateWidth - 1f) / 2f;
+            var zeroBasedDisplayMidpointY = (_sprite.Game.Display.DisplayCoordinateHeight - 1f) / 2f;
             var zeroBasedMapWidth = _sprite.Map.CoordinateWidth - 1f;
             var zeroBasedMapHeight = _sprite.Map.CoordinateHeight - 1f;
             

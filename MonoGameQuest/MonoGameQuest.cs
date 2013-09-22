@@ -1,24 +1,22 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
 namespace MonoGameQuest
 {
     public class MonoGameQuest : Game
     {
-        readonly GraphicsDeviceManager _graphics;
-
         public MonoGameQuest()
         {
-            _graphics = new GraphicsDeviceManager(this);
-            
+            // ReSharper disable once ObjectCreationAsStatement
+            new GraphicsDeviceManager(this); /* this is needed to initialize the graphics display service */
             Content.RootDirectory = @"Content";
-
-            Scale = 1;
         }
 
         protected override void Initialize()
         {
+            Display = new Display(this);
+            Components.Add(Display);
+            
             Map = new Map(this);
             Components.Add(Map);
 
@@ -29,24 +27,14 @@ namespace MonoGameQuest
             base.Initialize();
         }
 
+        public Display Display { get; private set; }
+
         public Map Map { get; private set; }
-
-        public int Scale { get; private set; }
-
-        void SetScale(PresentationParameters presentationParameters)
-        {
-            if (presentationParameters.BackBufferWidth <= 1500 || presentationParameters.BackBufferHeight <= 870)
-                Scale = 2;
-            else
-                Scale = 3;
-        }
 
         protected override void Update(GameTime gameTime)
         {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
-
-            SetScale(_graphics.GraphicsDevice.PresentationParameters);
 
             base.Update(gameTime);
         }
