@@ -48,7 +48,7 @@ namespace MonoGameQuest
             var mapWidth = Game.Map.CoordinateWidth * Game.Map.ScaledTilePixelWidth;
 
             DrawLine(spriteBatch, Vector2.Zero, new Vector2(mapWidth, 0));
-            for (var y = 1; y <= Game.Display.DisplayCoordinateHeight; y++)
+            for (var y = 1; y <= Game.Display.CoordinateHeight; y++)
             {
                 var adjustedY = y * Game.Map.ScaledTilePixelHeight;
                 DrawLine(spriteBatch, new Vector2(0, adjustedY - 1), new Vector2(mapWidth, adjustedY - 1));
@@ -56,7 +56,7 @@ namespace MonoGameQuest
             }
 
             DrawLine(spriteBatch, Vector2.Zero, new Vector2(0, mapHeight));
-            for (var x = 1; x <= Game.Display.DisplayCoordinateWidth; x++)
+            for (var x = 1; x <= Game.Display.CoordinateWidth; x++)
             {
                 var adjustedX = x * Game.Map.ScaledTilePixelWidth;
                 DrawLine(spriteBatch, new Vector2(adjustedX - 1, 0), new Vector2(adjustedX - 1, mapHeight));

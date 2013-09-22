@@ -11,9 +11,9 @@ namespace MonoGameQuest
             UpdateOrder = Constants.UpdateOrder.Display;
         }
 
-        public int DisplayCoordinateHeight { get; private set; }
+        public int CoordinateHeight { get; private set; }
 
-        public int DisplayCoordinateWidth { get; private set; }
+        public int CoordinateWidth { get; private set; }
 
         public int Scale { get; private set; }
 
@@ -25,8 +25,8 @@ namespace MonoGameQuest
                 Scale = 3;
 
             // TODO: this assumes the display size a multiple of the tile size. Eventually we'll need to handle the offset.
-            DisplayCoordinateHeight = GraphicsDevice.PresentationParameters.BackBufferHeight / (Game.Map.OriginalTilePixelHeight * Scale);
-            DisplayCoordinateWidth = GraphicsDevice.PresentationParameters.BackBufferWidth / (Game.Map.OriginalTilePixelWidth * Scale);
+            CoordinateHeight = GraphicsDevice.PresentationParameters.BackBufferHeight / (Game.Map.OriginalTilePixelHeight * Scale);
+            CoordinateWidth = GraphicsDevice.PresentationParameters.BackBufferWidth / (Game.Map.OriginalTilePixelWidth * Scale);
         }
 
         public override void Update(GameTime gameTime)

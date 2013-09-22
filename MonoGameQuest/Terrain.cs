@@ -17,16 +17,16 @@ namespace MonoGameQuest
 
         public override void Draw(GameTime gameTime)
         {
-            if (Game.Display.DisplayCoordinateHeight == 0 || Game.Display.DisplayCoordinateWidth == 0)
+            if (Game.Display.CoordinateHeight == 0 || Game.Display.CoordinateWidth == 0)
                 return; // the map hasn't been updated even once, and so can't be drawn
 
             SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
 
             SpriteBatch.GraphicsDevice.Clear(Game.Map.BackgroundColor);
 
-            for (var x = 0; x < Game.Display.DisplayCoordinateWidth; x++)
+            for (var x = 0; x < Game.Display.CoordinateWidth; x++)
             {
-                for (var y = 0; y < Game.Display.DisplayCoordinateHeight; y++)
+                for (var y = 0; y < Game.Display.CoordinateHeight; y++)
                 {
                     var mapIndex = new Vector2(x, y);
                     List<int> tileIndices;
