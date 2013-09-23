@@ -79,10 +79,42 @@ namespace MonoGameQuest.Sprites
         {
             if (CurrentAnimation == null)
                 return;
+
+            float adjustedX;
+            float adjustedY;
+
+            var zeroBasedDisplayWidth = Game.Display.CoordinateWidth - 1f;
+            var zeroBasedDisplayHeight = Game.Display.CoordinateHeight - 1f;
+            var zeroBasedDisplayMidpointX = (Game.Display.CoordinateWidth - 1f) / 2f;
+            var zeroBasedDisplayMidpointY = (Game.Display.CoordinateHeight - 1f) / 2f;
+            var zeroBasedMapWidth = Game.Map.CoordinateWidth - 1f;
+            var zeroBasedMapHeight = Game.Map.CoordinateHeight - 1f;
+
+            // adjust sprite position to center, unless the sprite is at the map's edge:
+            if (CoordinatePosition.X < zeroBasedDisplayMidpointX)
+                adjustedX = CoordinatePosition.X;
+            else if (CoordinatePosition.X > zeroBasedMapWidth - zeroBasedDisplayMidpointX)
+                adjustedX = zeroBasedDisplayWidth - (zeroBasedMapWidth - CoordinatePosition.X);
+            else
+                adjustedX = zeroBasedDisplayMidpointX;
+            if (CoordinatePosition.Y < zeroBasedDisplayMidpointY)
+                adjustedY = CoordinatePosition.Y;
+            else if (CoordinatePosition.Y > zeroBasedMapHeight - zeroBasedDisplayMidpointY)
+                adjustedY = zeroBasedDisplayHeight - (zeroBasedMapHeight - CoordinatePosition.Y);
+            else
+                adjustedY = zeroBasedDisplayMidpointY;
+
+            // adjust sprite position for the specified offset
+            adjustedX = (adjustedX * Game.Map.PixelTileWidth) + PixelOffsetX;
+            adjustedY = (adjustedY * Game.Map.PixelTileHeight) + PixelOffsetY;
+
+            var adjustedPosition = new Vector2(
+                adjustedX,
+                adjustedY);
             
             SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise);
 
-            CurrentAnimation.Draw(SpriteBatch);
+            CurrentAnimation.Draw(SpriteBatch, adjustedPosition, Game.Display.Scale);
 
             SpriteBatch.End();
         }

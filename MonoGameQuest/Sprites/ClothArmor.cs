@@ -19,70 +19,86 @@ namespace MonoGameQuest.Sprites
             movementSpeed: Constants.DefaultMoveSpeed)
         {
             AddAnimation(new Animation(
-                sprite: this,
+                spriteSheet: SpriteSheet,
                 type: AnimationType.Idle,
                 direction: Direction.Up,
-                row: 5, 
-                length: 2, 
-                speed: Constants.DefaultIdleSpeed));
+                spriteSheetRow: 5, 
+                framePixelWidth: PixelWidth,
+                framePixelHeight: PixelHeight,
+                framesLength: 2, 
+                frameDuration: Constants.DefaultIdleSpeed));
 
             AddAnimation(new Animation(
-                sprite: this,
+                spriteSheet: SpriteSheet,
                 type: AnimationType.Idle,
                 direction: Direction.Down,
-                row: 8, 
-                length: 2, 
-                speed: Constants.DefaultIdleSpeed));
+                spriteSheetRow: 8,
+                framePixelWidth: PixelWidth,
+                framePixelHeight: PixelHeight,
+                framesLength: 2, 
+                frameDuration: Constants.DefaultIdleSpeed));
 
             AddAnimation(new Animation(
-                sprite: this,
+                spriteSheet: SpriteSheet,
                 type: AnimationType.Idle,
                 direction: Direction.Left,
-                row: 2, 
-                length: 2, 
-                speed: Constants.DefaultIdleSpeed,
+                spriteSheetRow: 2,
+                framePixelWidth: PixelWidth,
+                framePixelHeight: PixelHeight,
+                framesLength: 2, 
+                frameDuration: Constants.DefaultIdleSpeed,
                 flipHorizontally: true));
 
             AddAnimation(new Animation(
-                sprite: this,
+                spriteSheet: SpriteSheet,
                 type: AnimationType.Idle,
                 direction: Direction.Right,
-                row: 2, 
-                length: 2, 
-                speed: Constants.DefaultIdleSpeed));
+                spriteSheetRow: 2,
+                framePixelWidth: PixelWidth,
+                framePixelHeight: PixelHeight,
+                framesLength: 2, 
+                frameDuration: Constants.DefaultIdleSpeed));
 
             AddAnimation(new Animation(
-                sprite: this,
+                spriteSheet: SpriteSheet,
                 type: AnimationType.Walk,
                 direction: Direction.Up,
-                row: 4, 
-                length: 4, 
-                speed: Constants.DefaultWalkSpeed));
+                spriteSheetRow: 4,
+                framePixelWidth: PixelWidth,
+                framePixelHeight: PixelHeight,
+                framesLength: 4, 
+                frameDuration: Constants.DefaultWalkSpeed));
 
             AddAnimation(new Animation(
-                sprite: this,
+                spriteSheet: SpriteSheet,
                 type: AnimationType.Walk,
                 direction: Direction.Down,
-                row: 7, 
-                length: 4, 
-                speed: Constants.DefaultWalkSpeed));
+                spriteSheetRow: 7,
+                framePixelWidth: PixelWidth,
+                framePixelHeight: PixelHeight,
+                framesLength: 4, 
+                frameDuration: Constants.DefaultWalkSpeed));
 
             AddAnimation(new Animation(
-                sprite: this,
+                spriteSheet: SpriteSheet,
                 type: AnimationType.Walk,
                 direction: Direction.Left,
-                row: 1, 
-                length: 4, 
-                speed: Constants.DefaultWalkSpeed,
+                spriteSheetRow: 1,
+                framePixelWidth: PixelWidth,
+                framePixelHeight: PixelHeight,
+                framesLength: 4, 
+                frameDuration: Constants.DefaultWalkSpeed,
                 flipHorizontally: true));
 
             AddAnimation(new Animation(
-                sprite: this,
+                spriteSheet: SpriteSheet,
                 type: AnimationType.Walk,
                 direction: Direction.Right,
-                row: 1, 
-                length: 4, 
-                speed: Constants.DefaultWalkSpeed));
+                spriteSheetRow: 1,
+                framePixelWidth: PixelWidth,
+                framePixelHeight: PixelHeight,
+                framesLength: 4, 
+                frameDuration: Constants.DefaultWalkSpeed));
         }
     }
 }
