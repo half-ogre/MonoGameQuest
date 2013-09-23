@@ -46,15 +46,29 @@ namespace MonoGameQuest.Sprites
             UpdateOrder = Constants.UpdateOrder.Sprites;
         }
 
-        public void AddAnimation(Animation animation)
+        public void AddAnimation(
+            AnimationType type, 
+            Direction direction, 
+            int spriteSheetRow, 
+            int framesLength, 
+            int frameDuration, 
+            bool flipHorizontally = false)
         {
-            if (animation == null)
-                throw new ArgumentNullException("animation");
-
-            var key = new Tuple<AnimationType, Direction>(animation.Type, animation.Direction);
+            var key = new Tuple<AnimationType, Direction>(type, direction);
 
             if (_animations.ContainsKey(key))
                 throw new ArgumentException("An animation with the specified type and direction has already been added.", "animation");
+
+            var animation = new Animation(
+                SpriteSheet,
+                type,
+                direction,
+                spriteSheetRow,
+                PixelWidth,
+                PixelHeight,
+                framesLength,
+                frameDuration,
+                flipHorizontally);
 
             _animations.Add(key, animation);
         }
