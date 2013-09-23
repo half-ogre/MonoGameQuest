@@ -1,12 +1,11 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
-using MonoGameQuest.Sprites;
 
 namespace MonoGameQuest
 {
     public class PlayerCharacter : MonoGameQuestComponent
     {
-        PlayerCharacterSprite _sprite;
+        PlayerSprite _sprite;
 
         public PlayerCharacter(MonoGameQuest game) : base(game)
         {
@@ -15,7 +14,7 @@ namespace MonoGameQuest
 
         public override void Initialize()
         {
-            _sprite = new ClothArmor(Game, Game.Content, Vector2.Zero, Game.Map);
+            _sprite = new ClothArmor(Game, Vector2.Zero);
             Game.Components.Add(_sprite);
             
             base.Initialize();

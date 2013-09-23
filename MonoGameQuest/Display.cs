@@ -9,6 +9,8 @@ namespace MonoGameQuest
         {
             Scale = 1;
             UpdateOrder = Constants.UpdateOrder.Display;
+
+            UpdateScale(GraphicsDevice.PresentationParameters);
         }
 
         public int CoordinateHeight { get; private set; }

@@ -14,12 +14,12 @@ namespace MonoGameQuest
 
         protected override void Initialize()
         {
+            Map = new Map(this);
+            Components.Add(Map);
+            
             Display = new Display(this);
             Components.Add(Display);
             
-            Map = new Map(this);
-            Components.Add(Map);
-
             Components.Add(new Terrain(this));
             Components.Add(new PlayerCharacter(this));
             Components.Add(new DebugInfo(this));

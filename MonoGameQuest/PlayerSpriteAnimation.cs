@@ -1,12 +1,11 @@
 ﻿using MonoGameFoundation;
-using MonoGameQuest.Sprites;
 
 namespace MonoGameQuest
 {
     public class PlayerSpriteAnimation : Animation
     {
         public PlayerSpriteAnimation(
-            PlayerCharacterSprite sprite,
+            PlayerSprite sprite,
             AnimationType type,
             Direction direction,
             int spriteSheetRow,

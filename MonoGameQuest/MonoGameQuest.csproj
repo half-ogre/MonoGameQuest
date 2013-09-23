@@ -50,8 +50,8 @@
     <Compile Include="PlayerSpriteAnimation.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Sprites\PlayerCharacterSprite.cs" />
-    <Compile Include="Sprites\ClothArmor.cs">
+    <Compile Include="PlayerSprite.cs" />
+    <Compile Include="PlayerSprites\ClothArmor.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Terrain.cs" />

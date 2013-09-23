@@ -3,47 +3,53 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
+using MonoGameFoundation;
 
 namespace MonoGameQuest
 {
-    public abstract class PlayerSprite : MonoGameQuestDrawableComponent
+    public abstract class PlayerSprite : Sprite
     {
         readonly Dictionary<Tuple<AnimationType, Direction>, PlayerSpriteAnimation> _animations;
+        Vector2 _coordinatePosition;
         readonly Stack<Action> _movement;
         readonly int _movementLength;
         readonly int _movementSpeed;
         int _movementTimeAtCurrentPosition;
-        readonly Texture2D _spriteSheet;
 
         protected PlayerSprite(
             MonoGameQuest game,
-            ContentManager contentManager,
             string spriteSheetName,
-            int pixelHeight,
             int pixelWidth,
+            int pixelHeight,
             int pixelOffsetX,
             int pixelOffsetY,
             Vector2 coordinatePosition,
-            Map map,
             int movementLength,
-            int movementSpeed) : base(game)
+            int movementSpeed) 
+            : base(
+                game,
+                game.Content.Load<Texture2D>(string.Concat(@"images\", spriteSheetName)),
+                pixelWidth, 
+                pixelHeight,
+                pixelOffsetX, 
+                pixelOffsetY)
         {
             PixelHeight = pixelHeight;
             PixelWidth = pixelWidth;
             PixelOffsetX = pixelOffsetX;
             PixelOffsetY = pixelOffsetY;
             CoordinatePosition = coordinatePosition;
-            Map = map;
-            _movementLength = movementLength;
-            _movementSpeed = movementSpeed;
-
-            _animations = new Dictionary<Tuple<AnimationType, Direction>, PlayerSpriteAnimation>();
-            _movement = new Stack<Action>();
-            _spriteSheet = contentManager.Load<Texture2D>(string.Concat(@"images\", spriteSheetName));
 
             DrawOrder = Constants.DrawOrder.Sprites;
-            Orientation = Direction.Down;
             UpdateOrder = Constants.UpdateOrder.Sprites;
+
+            Orientation = Direction.Down;
+            
+            _animations = new Dictionary<Tuple<AnimationType, Direction>, PlayerSpriteAnimation>();
+            
+            _movement = new Stack<Action>();
+            _movementLength = movementLength;
+            _movementSpeed = movementSpeed;
         }
 
         public void AddAnimation(
@@ -83,57 +89,34 @@ namespace MonoGameQuest
             CurrentAnimation.Reset();
         }
 
-        public Vector2 CoordinatePosition { get; private set; }
-
-        public PlayerSpriteAnimation CurrentAnimation { get; protected set; }
-
-        public override void Draw(GameTime gameTime)
+        protected override void BeginSpriteBatch()
         {
-            if (CurrentAnimation == null)
-                return;
-
-            float adjustedX;
-            float adjustedY;
-
-            var zeroBasedDisplayWidth = Game.Display.CoordinateWidth - 1f;
-            var zeroBasedDisplayHeight = Game.Display.CoordinateHeight - 1f;
-            var zeroBasedDisplayMidpointX = (Game.Display.CoordinateWidth - 1f) / 2f;
-            var zeroBasedDisplayMidpointY = (Game.Display.CoordinateHeight - 1f) / 2f;
-            var zeroBasedMapWidth = Game.Map.CoordinateWidth - 1f;
-            var zeroBasedMapHeight = Game.Map.CoordinateHeight - 1f;
-
-            // adjust sprite position to center, unless the sprite is at the map's edge:
-            if (CoordinatePosition.X < zeroBasedDisplayMidpointX)
-                adjustedX = CoordinatePosition.X;
-            else if (CoordinatePosition.X > zeroBasedMapWidth - zeroBasedDisplayMidpointX)
-                adjustedX = zeroBasedDisplayWidth - (zeroBasedMapWidth - CoordinatePosition.X);
-            else
-                adjustedX = zeroBasedDisplayMidpointX;
-            if (CoordinatePosition.Y < zeroBasedDisplayMidpointY)
-                adjustedY = CoordinatePosition.Y;
-            else if (CoordinatePosition.Y > zeroBasedMapHeight - zeroBasedDisplayMidpointY)
-                adjustedY = zeroBasedDisplayHeight - (zeroBasedMapHeight - CoordinatePosition.Y);
-            else
-                adjustedY = zeroBasedDisplayMidpointY;
-
-            // adjust sprite position for the specified offset
-            adjustedX = (adjustedX * Game.Map.PixelTileWidth) + PixelOffsetX;
-            adjustedY = (adjustedY * Game.Map.PixelTileHeight) + PixelOffsetY;
-
-            var adjustedPosition = new Vector2(
-                adjustedX,
-                adjustedY);
-            
             SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise);
+        }
 
-            CurrentAnimation.Draw(SpriteBatch, adjustedPosition, Game.Display.Scale);
+        public Vector2 CoordinatePosition
+        {
+            get { return _coordinatePosition; }
+            
+            private set
+            {
+                _coordinatePosition = value;
+                TranslateCoordinatePositionToPixelPosition();
+            }
+        }
 
-            SpriteBatch.End();
+        public new PlayerSpriteAnimation CurrentAnimation
+        {
+            get { return base.CurrentAnimation as PlayerSpriteAnimation; }
+            protected set { base.CurrentAnimation = value; }
+        }
+
+        public new MonoGameQuest Game
+        {
+            get { return base.Game as MonoGameQuest; }
         }
 
         public bool IsMoving { get { return _movement.Count > 0; } }
-
-        public Map Map { get; private set; }
 
         public void Move(Direction direction)
         {
@@ -153,7 +136,7 @@ namespace MonoGameQuest
             var newY = CoordinatePosition.Y + yDelta;
 
             // don't let the sprite move off the map:
-            if (newX < 0 || newX > Map.CoordinateWidth - 1 || newY < 0 || newY > Map.CoordinateHeight - 1)
+            if (newX < 0 || newX > Game.Map.CoordinateWidth - 1 || newY < 0 || newY > Game.Map.CoordinateHeight - 1)
                 return;
 
             _movementTimeAtCurrentPosition = 0;
@@ -180,18 +163,45 @@ namespace MonoGameQuest
 
         public Direction Orientation { get; protected set; }
 
-        public int PixelHeight { get; private set; }
+        protected void TranslateCoordinatePositionToPixelPosition()
+        {
+            float translatedX;
+            float translatedY;
 
-        public int PixelOffsetX { get; private set; }
+            var zeroBasedDisplayWidth = Game.Display.CoordinateWidth - 1f;
+            var zeroBasedDisplayHeight = Game.Display.CoordinateHeight - 1f;
+            var zeroBasedDisplayMidpointX = (Game.Display.CoordinateWidth - 1f) / 2f;
+            var zeroBasedDisplayMidpointY = (Game.Display.CoordinateHeight - 1f) / 2f;
+            var zeroBasedMapWidth = Game.Map.CoordinateWidth - 1f;
+            var zeroBasedMapHeight = Game.Map.CoordinateHeight - 1f;
 
-        public int PixelOffsetY { get; private set; }
+            // adjust sprite position to center, unless the sprite is at the map's edge:
+            if (CoordinatePosition.X < zeroBasedDisplayMidpointX)
+                translatedX = CoordinatePosition.X;
+            else if (CoordinatePosition.X > zeroBasedMapWidth - zeroBasedDisplayMidpointX)
+                translatedX = zeroBasedDisplayWidth - (zeroBasedMapWidth - CoordinatePosition.X);
+            else
+                translatedX = zeroBasedDisplayMidpointX;
+            if (CoordinatePosition.Y < zeroBasedDisplayMidpointY)
+                translatedY = CoordinatePosition.Y;
+            else if (CoordinatePosition.Y > zeroBasedMapHeight - zeroBasedDisplayMidpointY)
+                translatedY = zeroBasedDisplayHeight - (zeroBasedMapHeight - CoordinatePosition.Y);
+            else
+                translatedY = zeroBasedDisplayMidpointY;
 
-        public int PixelWidth { get; private set; }
+            // adjust sprite position for the specified offset
+            translatedX = (translatedX * Game.Map.PixelTileWidth) + PixelOffsetX;
+            translatedY = (translatedY * Game.Map.PixelTileHeight) + PixelOffsetY;
 
-        public Texture2D SpriteSheet { get { return _spriteSheet; } }
+            PixelPosition = new Vector2(
+                translatedX,
+                translatedY);
+        }
 
         public override void Update(GameTime gameTime)
         {
+            Scale = Game.Display.Scale;
+
             // stash these values because they will change during update, 
             // and we need to know the value when the update started.
             var wasMoving = IsMoving;
@@ -207,9 +217,6 @@ namespace MonoGameQuest
                 }
             }
 
-            if (CurrentAnimation != null)
-                CurrentAnimation.Update(gameTime);
-
             // start walking if the sprite is moving and isn't already walking:
             if (wasMoving && (CurrentAnimation == null || CurrentAnimation.Type != AnimationType.Walk))
                 Animate(AnimationType.Walk);
@@ -224,6 +231,8 @@ namespace MonoGameQuest
 
             if (CurrentAnimation == null)
                 Animate(AnimationType.Idle);
+
+            base.Update(gameTime);
         }
     }
 }
