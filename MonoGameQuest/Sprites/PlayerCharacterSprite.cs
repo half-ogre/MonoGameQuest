@@ -9,51 +9,37 @@ namespace MonoGameQuest.Sprites
     public abstract class PlayerCharacterSprite : MonoGameQuestDrawableComponent
     {
         readonly Dictionary<Tuple<AnimationType, Direction>, Animation> _animations;
-        readonly ContentManager _contentManager;
-        readonly int _unscaledHeight;
         readonly Stack<Action> _movement;
         readonly int _movementLength;
         readonly int _movementSpeed;
         int _movementTimeAtCurrentPosition;
-        readonly int _unscaledOffsetX;
-        readonly int _unscaledOffsetY;
-        Vector2 _position;
-        int _scale = 1;
-        int _scaledHeight;
-        int _scaledOffsetX;
-        int _scaledOffsetY;
-        int _scaledWidth;
-        Texture2D _spriteSheet;
-        readonly string _spriteSheetName;
-        readonly int _unscaledWidth;
+        readonly Texture2D _spriteSheet;
 
         protected PlayerCharacterSprite(
             MonoGameQuest game,
             ContentManager contentManager,
             string spriteSheetName,
-            int height,
-            int width,
-            int offsetX,
-            int offsetY,
-            Vector2 position,
+            int pixelHeight,
+            int pixelWidth,
+            int pixelOffsetX,
+            int pixelOffsetY,
+            Vector2 coordinatePosition,
             Map map,
             int movementLength,
             int movementSpeed) : base(game)
         {
-            _contentManager = contentManager;
-            _spriteSheetName = spriteSheetName;
-            _unscaledHeight = _scaledHeight = height;
-            _unscaledWidth = _scaledWidth = width;
-            _unscaledOffsetX = _scaledOffsetX = offsetX;
-            _unscaledOffsetY = _scaledOffsetY = offsetY;
-            _position = position;
+            PixelHeight = pixelHeight;
+            PixelWidth = pixelWidth;
+            PixelOffsetX = pixelOffsetX;
+            PixelOffsetY = pixelOffsetY;
+            CoordinatePosition = coordinatePosition;
             Map = map;
             _movementLength = movementLength;
             _movementSpeed = movementSpeed;
 
             _animations = new Dictionary<Tuple<AnimationType, Direction>, Animation>();
             _movement = new Stack<Action>();
-            _spriteSheet = _contentManager.Load<Texture2D>(string.Concat(@"images\1\", _spriteSheetName));
+            _spriteSheet = contentManager.Load<Texture2D>(string.Concat(@"images\", spriteSheetName));
 
             DrawOrder = Constants.DrawOrder.Sprites;
             Orientation = Direction.Down;
@@ -85,6 +71,8 @@ namespace MonoGameQuest.Sprites
             CurrentAnimation.Reset();
         }
 
+        public Vector2 CoordinatePosition { get; private set; }
+
         public Animation CurrentAnimation { get; protected set; }
 
         public override void Draw(GameTime gameTime)
@@ -92,14 +80,12 @@ namespace MonoGameQuest.Sprites
             if (CurrentAnimation == null)
                 return;
             
-            SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
+            SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise);
 
             CurrentAnimation.Draw(SpriteBatch);
 
             SpriteBatch.End();
         }
-
-        public int Height { get { return _scaledHeight; } }
 
         public bool IsMoving { get { return _movement.Count > 0; } }
 
@@ -107,20 +93,20 @@ namespace MonoGameQuest.Sprites
 
         public void Move(Direction direction)
         {
-            var offsetX = 0f;
-            var offsetY = 0f;
+            var xDelta = 0f;
+            var yDelta = 0f;
 
             if (direction == Direction.Up)
-                offsetY = -1f;
+                yDelta = -1f;
             if (direction == Direction.Down)
-                offsetY = 1f;
+                yDelta = 1f;
             if (direction == Direction.Left)
-                offsetX = -1f;
+                xDelta = -1f;
             if (direction == Direction.Right)
-                offsetX = 1f;
+                xDelta = 1f;
 
-            var newX = _position.X + offsetX;
-            var newY = _position.Y + offsetY;
+            var newX = CoordinatePosition.X + xDelta;
+            var newY = CoordinatePosition.Y + yDelta;
 
             // don't let the sprite move off the map:
             if (newX < 0 || newX > Map.CoordinateWidth - 1 || newY < 0 || newY > Map.CoordinateHeight - 1)
@@ -141,41 +127,27 @@ namespace MonoGameQuest.Sprites
             {
                 _movement.Push(() =>
                 {
-                    _position = new Vector2(
-                        _position.X + (offsetX / _movementLength),
-                        _position.Y + (offsetY / _movementLength));
+                    CoordinatePosition = new Vector2(
+                        CoordinatePosition.X + (xDelta / _movementLength),
+                        CoordinatePosition.Y + (yDelta / _movementLength));
                 });
             }
-        }
-
-        public int OffsetX { get { return _scaledOffsetX; } }
-
-        public int OffsetY { get { return _scaledOffsetY; } }
+        }        
 
         public Direction Orientation { get; protected set; }
 
-        public Vector2 Position { get { return _position; } }
+        public int PixelHeight { get; private set; }
 
-        void SetScale()
-        {
-            _scale = Game.Display.Scale;
+        public int PixelOffsetX { get; private set; }
 
-            _spriteSheet = _contentManager.Load<Texture2D>(string.Concat(@"images\", _scale, @"\", _spriteSheetName));
+        public int PixelOffsetY { get; private set; }
 
-            _scaledHeight = _unscaledHeight * _scale;
-            _scaledWidth = _unscaledWidth * _scale;
-
-            _scaledOffsetX = _unscaledOffsetX * _scale;
-            _scaledOffsetY = _unscaledOffsetY * _scale;
-        }
+        public int PixelWidth { get; private set; }
 
         public Texture2D SpriteSheet { get { return _spriteSheet; } }
 
         public override void Update(GameTime gameTime)
         {
-            if (Game.Display.Scale != _scale)
-                SetScale();
-
             // stash these values because they will change during update, 
             // and we need to know the value when the update started.
             var wasMoving = IsMoving;
@@ -209,7 +181,5 @@ namespace MonoGameQuest.Sprites
             if (CurrentAnimation == null)
                 Animate(AnimationType.Idle);
         }
-
-        public int Width { get { return _scaledWidth; } }
     }
 }

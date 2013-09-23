@@ -5,15 +5,15 @@ namespace MonoGameQuest.Sprites
 {
     public class ClothArmor : PlayerCharacterSprite
     {
-        public ClothArmor(MonoGameQuest game, ContentManager contentManager, Vector2 position, Map map) : base(
+        public ClothArmor(MonoGameQuest game, ContentManager contentManager, Vector2 coordinatePosition, Map map) : base(
             game: game,
             contentManager: contentManager,
             spriteSheetName: "clotharmor", 
-            height: 32, 
-            width: 32, 
-            offsetX: -8, 
-            offsetY: -12, 
-            position: position, 
+            pixelHeight: 32, 
+            pixelWidth: 32, 
+            pixelOffsetX: -8, 
+            pixelOffsetY: -12, 
+            coordinatePosition: coordinatePosition, 
             map: map,
             movementLength: Constants.DefaultMoveLength,
             movementSpeed: Constants.DefaultMoveSpeed)

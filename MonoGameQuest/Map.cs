@@ -7,7 +7,6 @@ namespace MonoGameQuest
 {
     public class Map : MonoGameQuestComponent
     {
-        int _lastScale = 1;
         readonly Dictionary<Vector2, List<int>> _locations;
 
         public Map(MonoGameQuest game) : base(game)
@@ -17,8 +16,8 @@ namespace MonoGameQuest
             CoordinateHeight = tmxMap.Height;
             CoordinateWidth = tmxMap.Width;
 
-            OriginalTilePixelHeight = ScaledTilePixelHeight = tmxMap.TileHeight;
-            OriginalTilePixelWidth = ScaledTilePixelWidth = tmxMap.TileWidth;
+            PixelTileHeight = tmxMap.TileHeight;
+            PixelTileWidth = tmxMap.TileWidth;
             
             _locations = new Dictionary<Vector2, List<int>>();
             
@@ -56,26 +55,8 @@ namespace MonoGameQuest
 
         public Dictionary<Vector2, List<int>> Locations { get { return _locations; } }
 
-        public int OriginalTilePixelHeight { get; private set; }
-        
-        public int OriginalTilePixelWidth { get; private set; }
+        public int PixelTileHeight { get; private set; }
 
-        public int ScaledTilePixelHeight { get; private set; }
-
-        public int ScaledTilePixelWidth { get; private set; }
-
-        public override void Update(GameTime gameTime)
-        {
-            if (_lastScale != Game.Display.Scale)
-                UpdateScale();
-        }
-
-        void UpdateScale()
-        {
-            _lastScale = Game.Display.Scale;
-
-            ScaledTilePixelHeight = OriginalTilePixelHeight * Game.Display.Scale;
-            ScaledTilePixelWidth = OriginalTilePixelWidth * Game.Display.Scale;   
-        }
+        public int PixelTileWidth { get; private set; }
     }
 }
