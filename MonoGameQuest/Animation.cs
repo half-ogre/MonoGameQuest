@@ -43,10 +43,10 @@ namespace MonoGameQuest
         public void Draw(SpriteBatch spriteBatch)
         {
             var sourceRectangle = new Rectangle(
-                _currentIndex * _sprite.Width,
-                Row * _sprite.Height,
-                _sprite.Width,
-                _sprite.Height);
+                _currentIndex * _sprite.PixelWidth,
+                Row * _sprite.PixelHeight,
+                _sprite.PixelWidth,
+                _sprite.PixelHeight);
 
             float adjustedX;
             float adjustedY;
@@ -59,38 +59,37 @@ namespace MonoGameQuest
             var zeroBasedMapHeight = _sprite.Map.CoordinateHeight - 1f;
             
             // adjust sprite position to center, unless the sprite is at the map's edge:
-            if (_sprite.Position.X < zeroBasedDisplayMidpointX)
-                adjustedX = _sprite.Position.X;
-            else if (_sprite.Position.X > zeroBasedMapWidth - zeroBasedDisplayMidpointX)
-                adjustedX = zeroBasedDisplayWidth - (zeroBasedMapWidth - _sprite.Position.X);
+            if (_sprite.CoordinatePosition.X < zeroBasedDisplayMidpointX)
+                adjustedX = _sprite.CoordinatePosition.X;
+            else if (_sprite.CoordinatePosition.X > zeroBasedMapWidth - zeroBasedDisplayMidpointX)
+                adjustedX = zeroBasedDisplayWidth - (zeroBasedMapWidth - _sprite.CoordinatePosition.X);
             else
                 adjustedX = zeroBasedDisplayMidpointX;
-            if (_sprite.Position.Y < zeroBasedDisplayMidpointY)
-                adjustedY = _sprite.Position.Y;
-            else if (_sprite.Position.Y > zeroBasedMapHeight - zeroBasedDisplayMidpointY)
-                adjustedY = zeroBasedDisplayHeight - (zeroBasedMapHeight - _sprite.Position.Y);
+            if (_sprite.CoordinatePosition.Y < zeroBasedDisplayMidpointY)
+                adjustedY = _sprite.CoordinatePosition.Y;
+            else if (_sprite.CoordinatePosition.Y > zeroBasedMapHeight - zeroBasedDisplayMidpointY)
+                adjustedY = zeroBasedDisplayHeight - (zeroBasedMapHeight - _sprite.CoordinatePosition.Y);
             else
                 adjustedY = zeroBasedDisplayMidpointY;
 
             // adjust sprite position for the specified offset
-            adjustedX = (adjustedX * _sprite.Map.ScaledTilePixelWidth) + _sprite.OffsetX;
-            adjustedY = (adjustedY * _sprite.Map.ScaledTilePixelHeight) + _sprite.OffsetY;
-
+            adjustedX = (adjustedX * _sprite.Map.PixelTileWidth) + _sprite.PixelOffsetX;
+            adjustedY = (adjustedY * _sprite.Map.PixelTileHeight) + _sprite.PixelOffsetY;
+            
             var adjustedPosition = new Vector2(
                 adjustedX,
                 adjustedY);
     
             spriteBatch.Draw(
                 texture: _sprite.SpriteSheet,
-                position: adjustedPosition,
+                position: adjustedPosition * _sprite.Game.Display.Scale,
                 sourceRectangle: sourceRectangle,
                 color: Color.White,
                 rotation: 0f,
                 origin: Vector2.Zero,
-                scale: Vector2.One,
+                scale: _sprite.Game.Display.Scale,
                 effect: FlipHorizontally ? SpriteEffects.FlipHorizontally : SpriteEffects.None,
                 depth: 0f);
-            spriteBatch.End();
         }
         
         public bool FlipHorizontally { get; private set; }

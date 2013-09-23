@@ -6,7 +6,6 @@ namespace MonoGameQuest
 {
     public class Terrain : MonoGameQuestDrawableComponent
     {
-        int _lastScale;
         Texture2D _tileSheet;
 
         public Terrain(MonoGameQuest game) : base(game)
@@ -20,7 +19,7 @@ namespace MonoGameQuest
             if (Game.Display.CoordinateHeight == 0 || Game.Display.CoordinateWidth == 0)
                 return; // the map hasn't been updated even once, and so can't be drawn
 
-            SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied);
+            SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState.NonPremultiplied, SamplerState.PointClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise);
 
             SpriteBatch.GraphicsDevice.Clear(Game.Map.BackgroundColor);
 
@@ -35,9 +34,14 @@ namespace MonoGameQuest
                         foreach (var tileIndex in tileIndices)
                             SpriteBatch.Draw(
                                 texture: _tileSheet,
-                                position: new Vector2(x * Game.Map.ScaledTilePixelWidth, y * Game.Map.ScaledTilePixelHeight),
+                                position: new Vector2(x * Game.Map.PixelTileWidth, y * Game.Map.PixelTileHeight) * Game.Display.Scale,
                                 sourceRectangle: GetSourceRectangleForTileIndex(tileIndex),
-                                color: Color.White /* tint */);
+                                color: Color.White, /* tint */
+                                rotation: 0f,
+                                origin: Vector2.Zero,
+                                scale: Game.Display.Scale,
+                                effect: SpriteEffects.None,
+                                depth: 0f);
                     }
                 }
             }
@@ -47,7 +51,7 @@ namespace MonoGameQuest
 
         private Rectangle GetSourceRectangleForTileIndex(int index)
         {
-            var tileSheetColumns = _tileSheet.Width/Game.Map.ScaledTilePixelWidth;
+            var tileSheetColumns = _tileSheet.Width/Game.Map.PixelTileWidth;
             var tilesheetRow = 1;
 
             while (index > tileSheetColumns)
@@ -59,30 +63,17 @@ namespace MonoGameQuest
             var tilesheetColumn = index;
 
             return new Rectangle(
-                x: (tilesheetColumn - 1) * Game.Map.ScaledTilePixelWidth,
-                y: (tilesheetRow - 1) * Game.Map.ScaledTilePixelHeight,
-                width: Game.Map.ScaledTilePixelWidth,
-                height: Game.Map.ScaledTilePixelHeight);
+                x: (tilesheetColumn - 1) * Game.Map.PixelTileWidth,
+                y: (tilesheetRow - 1) * Game.Map.PixelTileHeight,
+                width: Game.Map.PixelTileWidth,
+                height: Game.Map.PixelTileHeight);
         }
 
         protected override void LoadContent()
         {
-            _tileSheet = Game.Content.Load<Texture2D>(@"images\1\tilesheet");
+            _tileSheet = Game.Content.Load<Texture2D>(@"images\tilesheet");
             
             base.LoadContent();
-        }
-
-        public override void Update(GameTime gameTime)
-        {
-            if (_lastScale != Game.Display.Scale)
-                UpdateScale();
-        }
-
-        void UpdateScale()
-        {
-            _lastScale = Game.Display.Scale;
-
-            _tileSheet = Game.Content.Load<Texture2D>(string.Concat(@"images\", _lastScale, @"\tilesheet"));
         }
     }
 }
