@@ -35,7 +35,6 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Animation.cs" />
     <Compile Include="AnimationType.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="DebugInfo.cs" />
@@ -48,10 +47,11 @@
     <Compile Include="MonoGameQuestComponent.cs" />
     <Compile Include="MonoGameQuestDrawableComponent.cs" />
     <Compile Include="PlayerCharacter.cs" />
+    <Compile Include="PlayerSpriteAnimation.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Sprites\PlayerCharacterSprite.cs" />
-    <Compile Include="Sprites\ClothArmor.cs">
+    <Compile Include="PlayerSprite.cs" />
+    <Compile Include="PlayerSprites\ClothArmor.cs">
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Terrain.cs" />
@@ -350,6 +350,12 @@
     <None Include="Content\fonts\Consolas.xnb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MonoGameFoundation\MonoGameFoundation.csproj">
+      <Project>{cf6bfc68-bd2c-45f2-9c2a-7089b3f4e68f}</Project>
+      <Name>MonoGameFoundation</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
