@@ -4,9 +4,9 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace MonoGameQuest.Sprites
+namespace MonoGameQuest
 {
-    public abstract class PlayerCharacterSprite : MonoGameQuestDrawableComponent
+    public abstract class PlayerSprite : MonoGameQuestDrawableComponent
     {
         readonly Dictionary<Tuple<AnimationType, Direction>, PlayerSpriteAnimation> _animations;
         readonly Stack<Action> _movement;
@@ -15,7 +15,7 @@ namespace MonoGameQuest.Sprites
         int _movementTimeAtCurrentPosition;
         readonly Texture2D _spriteSheet;
 
-        protected PlayerCharacterSprite(
+        protected PlayerSprite(
             MonoGameQuest game,
             ContentManager contentManager,
             string spriteSheetName,

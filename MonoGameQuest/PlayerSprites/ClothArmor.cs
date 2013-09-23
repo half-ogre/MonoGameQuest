@@ -1,9 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Content;
 
-namespace MonoGameQuest.Sprites
+namespace MonoGameQuest
 {
-    public class ClothArmor : PlayerCharacterSprite
+    public class ClothArmor : PlayerSprite
     {
         public ClothArmor(MonoGameQuest game, ContentManager contentManager, Vector2 coordinatePosition, Map map) : base(
             game: game,
