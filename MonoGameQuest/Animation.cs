@@ -6,8 +6,8 @@ namespace MonoGameQuest
 {
     public class Animation
     {
-        int _currentIndex;
-        int _timeAtCurrentIndex;
+        int _currentFrameDuration;
+        int _currentFrameIndex;
         readonly Texture2D _spriteSheet;
 
         public Animation(
@@ -56,7 +56,7 @@ namespace MonoGameQuest
         public void Draw(SpriteBatch spriteBatch, Vector2 position, float scale)
         {
             var sourceRectangle = new Rectangle(
-                _currentIndex * FramePixelWidth,
+                _currentFrameIndex * FramePixelWidth,
                 SpriteSheetRow * FramePixelHeight,
                 FramePixelWidth,
                 FramePixelHeight);
@@ -85,8 +85,8 @@ namespace MonoGameQuest
 
         public void Reset()
         {
-            _timeAtCurrentIndex = 0;
-            _currentIndex = 0;
+            _currentFrameDuration = 0;
+            _currentFrameIndex = 0;
         }
 
         public int SpriteSheetRow { get; private set; }
@@ -95,14 +95,14 @@ namespace MonoGameQuest
 
         public void Update(GameTime gameTime)
         {
-            _timeAtCurrentIndex += gameTime.ElapsedGameTime.Milliseconds;
+            _currentFrameDuration += gameTime.ElapsedGameTime.Milliseconds;
 
-            if (_timeAtCurrentIndex > FrameDuration)
+            if (_currentFrameDuration > FrameDuration)
             {
-                _timeAtCurrentIndex = 0;
+                _currentFrameDuration = 0;
 
-                if (++_currentIndex >= FramesLength)
-                    _currentIndex = 0;
+                if (++_currentFrameIndex >= FramesLength)
+                    _currentFrameIndex = 0;
             }
         }
     }
