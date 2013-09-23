@@ -8,7 +8,7 @@ namespace MonoGameQuest.Sprites
 {
     public abstract class PlayerCharacterSprite : MonoGameQuestDrawableComponent
     {
-        readonly Dictionary<Tuple<AnimationType, Direction>, Animation> _animations;
+        readonly Dictionary<Tuple<AnimationType, Direction>, PlayerSpriteAnimation> _animations;
         readonly Stack<Action> _movement;
         readonly int _movementLength;
         readonly int _movementSpeed;
@@ -37,7 +37,7 @@ namespace MonoGameQuest.Sprites
             _movementLength = movementLength;
             _movementSpeed = movementSpeed;
 
-            _animations = new Dictionary<Tuple<AnimationType, Direction>, Animation>();
+            _animations = new Dictionary<Tuple<AnimationType, Direction>, PlayerSpriteAnimation>();
             _movement = new Stack<Action>();
             _spriteSheet = contentManager.Load<Texture2D>(string.Concat(@"images\", spriteSheetName));
 
@@ -57,15 +57,13 @@ namespace MonoGameQuest.Sprites
             var key = new Tuple<AnimationType, Direction>(type, direction);
 
             if (_animations.ContainsKey(key))
-                throw new ArgumentException("An animation with the specified type and direction has already been added.", "animation");
+                throw new ArgumentException("An animation with the specified type and direction has already been added.");
 
-            var animation = new Animation(
-                SpriteSheet,
+            var animation = new PlayerSpriteAnimation(
+                this,
                 type,
                 direction,
                 spriteSheetRow,
-                PixelWidth,
-                PixelHeight,
                 framesLength,
                 frameDuration,
                 flipHorizontally);
@@ -75,7 +73,7 @@ namespace MonoGameQuest.Sprites
 
         public void Animate(AnimationType type)
         {
-            Animation animation;
+            PlayerSpriteAnimation animation;
 
             var key = new Tuple<AnimationType, Direction>(type, Orientation);
             if (!_animations.TryGetValue(key, out animation))
@@ -87,7 +85,7 @@ namespace MonoGameQuest.Sprites
 
         public Vector2 CoordinatePosition { get; private set; }
 
-        public Animation CurrentAnimation { get; protected set; }
+        public PlayerSpriteAnimation CurrentAnimation { get; protected set; }
 
         public override void Draw(GameTime gameTime)
         {

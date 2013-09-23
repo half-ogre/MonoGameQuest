@@ -12,8 +12,6 @@ namespace MonoGameQuest
 
         public Animation(
             Texture2D spriteSheet,
-            AnimationType type,
-            Direction direction,
             int spriteSheetRow,
             int framePixelWidth,
             int framePixelHeight,
@@ -41,8 +39,6 @@ namespace MonoGameQuest
 
             _spriteSheet = spriteSheet;
 
-            Type = type;
-            Direction = direction;
             SpriteSheetRow = spriteSheetRow;
             FramePixelWidth = framePixelWidth;
             FramePixelHeight = framePixelHeight;
@@ -50,8 +46,6 @@ namespace MonoGameQuest
             FrameDuration = frameDuration;
             FlipHorizontally = flipHorizontally;
         }
-
-        public Direction Direction { get; private set; }
 
         public void Draw(SpriteBatch spriteBatch, Vector2 position, float scale)
         {
@@ -90,8 +84,6 @@ namespace MonoGameQuest
         }
 
         public int SpriteSheetRow { get; private set; }
-
-        public AnimationType Type { get; private set; }
 
         public void Update(GameTime gameTime)
         {
