@@ -35,7 +35,6 @@
     <ApplicationIcon>Icon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Animation.cs" />
     <Compile Include="AnimationType.cs" />
     <Compile Include="Constants.cs" />
     <Compile Include="DebugInfo.cs" />
@@ -351,6 +350,12 @@
     <None Include="Content\fonts\Consolas.xnb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MonoGameFoundation\MonoGameFoundation.csproj">
+      <Project>{cf6bfc68-bd2c-45f2-9c2a-7089b3f4e68f}</Project>
+      <Name>MonoGameFoundation</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

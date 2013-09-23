@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
-namespace MonoGameQuest
+namespace MonoGameFoundation
 {
     public class Animation
     {

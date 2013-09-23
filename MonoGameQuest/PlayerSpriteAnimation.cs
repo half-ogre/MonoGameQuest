@@ -1,4 +1,5 @@
-﻿using MonoGameQuest.Sprites;
+﻿using MonoGameFoundation;
+using MonoGameQuest.Sprites;
 
 namespace MonoGameQuest
 {
