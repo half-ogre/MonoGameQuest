@@ -27,13 +27,13 @@ namespace MonoGameQuest
             var zeroBasedDisplayMidpointX = (Game.Display.CoordinateWidth - 1) / 2f;
             var zeroBasedDisplayMidpointY = (Game.Display.CoordinateHeight - 1) / 2f;
             
-            var coordinateOffsetX = Game.Player.Position.X - zeroBasedDisplayMidpointX;
+            var coordinateOffsetX = Game.Player.CoordinatePosition.X - zeroBasedDisplayMidpointX;
             if (coordinateOffsetX < 0)
                 coordinateOffsetX = 0;
             if (coordinateOffsetX > Game.Map.CoordinateWidth - Game.Display.CoordinateWidth)
                 coordinateOffsetX = Game.Map.CoordinateWidth - Game.Display.CoordinateWidth;
 
-            var coordinateOffsetY = Game.Player.Position.Y - zeroBasedDisplayMidpointY;
+            var coordinateOffsetY = Game.Player.CoordinatePosition.Y - zeroBasedDisplayMidpointY;
             if (coordinateOffsetY < 0)
                 coordinateOffsetY = 0;
             if (coordinateOffsetY > Game.Map.CoordinateHeight - Game.Display.CoordinateHeight)
