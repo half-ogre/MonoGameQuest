@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -24,39 +23,21 @@ namespace MonoGameQuest
 
             SpriteBatch.GraphicsDevice.Clear(Game.Map.BackgroundColor);
 
-            var zeroBasedDisplayMidpointX = (Game.Display.CoordinateWidth - 1) / 2f;
-            var zeroBasedDisplayMidpointY = (Game.Display.CoordinateHeight - 1) / 2f;
-            
-            var coordinateOffsetX = Game.Player.CoordinatePosition.X - zeroBasedDisplayMidpointX;
-            if (coordinateOffsetX < 0)
-                coordinateOffsetX = 0;
-            if (coordinateOffsetX > Game.Map.CoordinateWidth - Game.Display.CoordinateWidth)
-                coordinateOffsetX = Game.Map.CoordinateWidth - Game.Display.CoordinateWidth;
-
-            var coordinateOffsetY = Game.Player.CoordinatePosition.Y - zeroBasedDisplayMidpointY;
-            if (coordinateOffsetY < 0)
-                coordinateOffsetY = 0;
-            if (coordinateOffsetY > Game.Map.CoordinateHeight - Game.Display.CoordinateHeight)
-                coordinateOffsetY = Game.Map.CoordinateHeight - Game.Display.CoordinateHeight;
-
             for (var x = 0; x < Game.Display.CoordinateWidth + 1; x++)
             {
                 for (var y = 0; y < Game.Display.CoordinateHeight + 1; y++)
                 {
-                    var xCoordinate = (float)Math.Floor(x + coordinateOffsetX);
-                    var yCoordinate = (float)Math.Floor(y + coordinateOffsetY);
+                    var displayCoordinate = new Vector2(x, y);
 
-                    var xPixelOffset = (coordinateOffsetX % 1) * Game.Map.PixelTileWidth;
-                    var yPixelOffset = (coordinateOffsetY % 1) * Game.Map.PixelTileHeight;
-
-                    var mapIndex = new Vector2(xCoordinate, yCoordinate);
+                    var mapIndex = Game.Display.CalculateMapCoordinate(displayCoordinate);
+                    
                     List<int> tileIndices;
                     if (Game.Map.Locations.TryGetValue(mapIndex, out tileIndices))
                     {
                         foreach (var tileIndex in tileIndices)
                             SpriteBatch.Draw(
                                 texture: _tileSheet,
-                                position: new Vector2((x * Game.Map.PixelTileWidth) - xPixelOffset, (y * Game.Map.PixelTileHeight) - yPixelOffset) * Game.Display.Scale,
+                                position: Game.Display.CalculatePixelPosition(displayCoordinate),
                                 sourceRectangle: GetSourceRectangleForTileIndex(tileIndex),
                                 color: Color.White, /* tint */
                                 rotation: 0f,
