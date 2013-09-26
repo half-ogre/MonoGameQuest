@@ -86,6 +86,10 @@ namespace MonoGameQuest
             CoordinateHeight = GraphicsDevice.PresentationParameters.BackBufferHeight / (Game.Map.PixelTileHeight * Scale);
             CoordinateWidth = GraphicsDevice.PresentationParameters.BackBufferWidth / (Game.Map.PixelTileWidth * Scale);
 
+            CoordinateMidpoint = new Vector2(
+                (CoordinateWidth - 1) / 2f,
+                (CoordinateHeight - 1) / 2f);
+
             CoordinateTerminus = new Vector2(
                 CoordinateWidth - 1f,
                 CoordinateHeight - 1f);
@@ -96,10 +100,6 @@ namespace MonoGameQuest
             _mapCoordinateOffset = null;
             
             UpdateScale(GraphicsDevice.PresentationParameters);
-
-            CoordinateMidpoint = new Vector2(
-                (Game.Display.CoordinateWidth - 1) / 2f,
-                (Game.Display.CoordinateHeight - 1) / 2f);
         }
     }
 }
