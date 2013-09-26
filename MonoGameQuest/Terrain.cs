@@ -23,18 +23,21 @@ namespace MonoGameQuest
 
             SpriteBatch.GraphicsDevice.Clear(Game.Map.BackgroundColor);
 
-            for (var x = 0; x < Game.Display.CoordinateWidth; x++)
+            for (var x = 0; x < Game.Display.CoordinateWidth + 1; x++)
             {
-                for (var y = 0; y < Game.Display.CoordinateHeight; y++)
+                for (var y = 0; y < Game.Display.CoordinateHeight + 1; y++)
                 {
-                    var mapIndex = new Vector2(x, y);
+                    var displayCoordinate = new Vector2(x, y);
+
+                    var mapIndex = Game.Display.CalculateMapCoordinate(displayCoordinate);
+                    
                     List<int> tileIndices;
                     if (Game.Map.Locations.TryGetValue(mapIndex, out tileIndices))
                     {
                         foreach (var tileIndex in tileIndices)
                             SpriteBatch.Draw(
                                 texture: _tileSheet,
-                                position: new Vector2(x * Game.Map.PixelTileWidth, y * Game.Map.PixelTileHeight) * Game.Display.Scale,
+                                position: Game.Display.CalculatePixelPosition(displayCoordinate),
                                 sourceRectangle: GetSourceRectangleForTileIndex(tileIndex),
                                 color: Color.White, /* tint */
                                 rotation: 0f,

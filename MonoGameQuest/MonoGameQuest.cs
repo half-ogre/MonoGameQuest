@@ -19,9 +19,11 @@ namespace MonoGameQuest
             
             Display = new Display(this);
             Components.Add(Display);
+
+            Player = new Player(this);
+            Components.Add(Player);
             
             Components.Add(new Terrain(this));
-            Components.Add(new PlayerCharacter(this));
             Components.Add(new DebugInfo(this));
             
             base.Initialize();
@@ -30,6 +32,8 @@ namespace MonoGameQuest
         public Display Display { get; private set; }
 
         public Map Map { get; private set; }
+
+        public Player Player { get; private set; }
 
         protected override void Update(GameTime gameTime)
         {

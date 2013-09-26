@@ -44,23 +44,46 @@ namespace MonoGameQuest
 
         void DrawGrid(SpriteBatch spriteBatch)
         {
-            var mapHeight = Game.Map.CoordinateHeight * (Game.Map.PixelTileHeight * Game.Display.Scale);
-            var mapWidth = Game.Map.CoordinateWidth * (Game.Map.PixelTileWidth * Game.Display.Scale);
+            var offsetForPrecedingRowBottomGridLine = new Vector2(0, -1);
 
-            DrawLine(spriteBatch, Vector2.Zero, new Vector2(mapWidth, 0));
-            for (var y = 1; y <= Game.Display.CoordinateHeight; y++)
+            // draw the row grid lines:
+            for (var y = 0; y <= Game.Display.CoordinateHeight; y++)
             {
-                var adjustedY = y * (Game.Map.PixelTileHeight * Game.Display.Scale);
-                DrawLine(spriteBatch, new Vector2(0, adjustedY - 1), new Vector2(mapWidth, adjustedY - 1));
-                DrawLine(spriteBatch, new Vector2(0, adjustedY), new Vector2(mapWidth, adjustedY));
+                var start = Game.Display.CalculatePixelPosition(new Vector2(0, y));
+                var end = Game.Display.CalculatePixelPosition(new Vector2(Game.Map.CoordinateWidth, y));
+
+                // draw the row's top grid line:
+                DrawLine(
+                    spriteBatch,
+                    start,
+                    end);
+
+                // draw the preceding row's bottom grid line:
+                DrawLine(
+                    spriteBatch,
+                    start - offsetForPrecedingRowBottomGridLine,
+                    end - offsetForPrecedingRowBottomGridLine);
             }
 
-            DrawLine(spriteBatch, Vector2.Zero, new Vector2(0, mapHeight));
-            for (var x = 1; x <= Game.Display.CoordinateWidth; x++)
+            var offsetForPrecedingColumnRightGridLine = new Vector2(-1, 0);
+            
+            // draw the column grid lines:
+            for (var x = 0; x <= Game.Display.CoordinateWidth; x++)
             {
-                var adjustedX = x * (Game.Map.PixelTileWidth * Game.Display.Scale);
-                DrawLine(spriteBatch, new Vector2(adjustedX - 1, 0), new Vector2(adjustedX - 1, mapHeight));
-                DrawLine(spriteBatch, new Vector2(adjustedX, 0), new Vector2(adjustedX, mapHeight));
+                var start = Game.Display.CalculatePixelPosition(new Vector2(x, 0));
+                var end = Game.Display.CalculatePixelPosition(new Vector2(x, Game.Map.CoordinateHeight));
+
+                // draw the column's left grid line
+                DrawLine(
+                    spriteBatch, 
+                    start, 
+                    end);
+                
+                // draw the preceding column's right grid line
+                DrawLine(
+                    spriteBatch, 
+                    start - offsetForPrecedingColumnRightGridLine, 
+                    end - offsetForPrecedingColumnRightGridLine);
             }
         }
 

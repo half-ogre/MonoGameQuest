@@ -3,11 +3,11 @@ using Microsoft.Xna.Framework.Input;
 
 namespace MonoGameQuest
 {
-    public class PlayerCharacter : MonoGameQuestComponent
+    public class Player : MonoGameQuestComponent
     {
         PlayerSprite _sprite;
 
-        public PlayerCharacter(MonoGameQuest game) : base(game)
+        public Player(MonoGameQuest game) : base(game)
         {
             UpdateOrder = Constants.UpdateOrder.Models;
         }
@@ -20,7 +20,7 @@ namespace MonoGameQuest
             base.Initialize();
         }
 
-        public Vector2 Position { get { return _sprite.CoordinatePosition; } }
+        public Vector2 CoordinatePosition { get { return _sprite.CoordinatePosition; } }
 
         public override void Update(GameTime gameTime)
         {
