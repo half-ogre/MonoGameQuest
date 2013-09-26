@@ -2,6 +2,8 @@
 
 This is a work-in-progress [MonoGame](http://www.monogame.net/) port of [BrowserQuest](http://browserquest.mozilla.org/). The idea is to make a game that is visually and behaviorally identical to BrowserQuest, but made as if it was an original MonoGame game (i.e., not a straight port).
 
+![screenshot_092613_093049_am](https://f.cloud.github.com/assets/21165/1219300/0227b7d6-26c9-11e3-96e0-5f1e77a22a5d.jpg)
+
 ## Getting Started
 
 ### Windows (using Visual Studio 2012)
