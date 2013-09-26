@@ -47,20 +47,38 @@ namespace MonoGameQuest
             var mapHeight = Game.Map.CoordinateHeight * (Game.Map.PixelTileHeight * Game.Display.Scale);
             var mapWidth = Game.Map.CoordinateWidth * (Game.Map.PixelTileWidth * Game.Display.Scale);
 
+            var zeroBasedDisplayMidpointX = (Game.Display.CoordinateWidth - 1) / 2f;
+            var zeroBasedDisplayMidpointY = (Game.Display.CoordinateHeight - 1) / 2f;
+
+            var coordinateOffsetX = Game.Player.Position.X - zeroBasedDisplayMidpointX;
+            if (coordinateOffsetX < 0)
+                coordinateOffsetX = 0;
+            if (coordinateOffsetX > Game.Map.CoordinateWidth - Game.Display.CoordinateWidth)
+                coordinateOffsetX = Game.Map.CoordinateWidth - Game.Display.CoordinateWidth;
+
+            var coordinateOffsetY = Game.Player.Position.Y - zeroBasedDisplayMidpointY;
+            if (coordinateOffsetY < 0)
+                coordinateOffsetY = 0;
+            if (coordinateOffsetY > Game.Map.CoordinateHeight - Game.Display.CoordinateHeight)
+                coordinateOffsetY = Game.Map.CoordinateHeight - Game.Display.CoordinateHeight;
+
+            var xPixelOffset = (coordinateOffsetX % 1) * Game.Map.PixelTileWidth;
+            var yPixelOffset = (coordinateOffsetY % 1) * Game.Map.PixelTileHeight;
+
             DrawLine(spriteBatch, Vector2.Zero, new Vector2(mapWidth, 0));
             for (var y = 1; y <= Game.Display.CoordinateHeight; y++)
             {
                 var adjustedY = y * (Game.Map.PixelTileHeight * Game.Display.Scale);
-                DrawLine(spriteBatch, new Vector2(0, adjustedY - 1), new Vector2(mapWidth, adjustedY - 1));
-                DrawLine(spriteBatch, new Vector2(0, adjustedY), new Vector2(mapWidth, adjustedY));
+                DrawLine(spriteBatch, new Vector2(0, adjustedY - yPixelOffset - 1), new Vector2(mapWidth, adjustedY - 1));
+                DrawLine(spriteBatch, new Vector2(0, adjustedY - yPixelOffset), new Vector2(mapWidth, adjustedY));
             }
 
             DrawLine(spriteBatch, Vector2.Zero, new Vector2(0, mapHeight));
             for (var x = 1; x <= Game.Display.CoordinateWidth; x++)
             {
-                var adjustedX = x * (Game.Map.PixelTileWidth * Game.Display.Scale);
-                DrawLine(spriteBatch, new Vector2(adjustedX - 1, 0), new Vector2(adjustedX - 1, mapHeight));
-                DrawLine(spriteBatch, new Vector2(adjustedX, 0), new Vector2(adjustedX, mapHeight));
+                var adjustedX = x * (Game.Map.PixelTileWidth * Game.Display.Scale) - xPixelOffset;
+                DrawLine(spriteBatch, new Vector2(adjustedX - xPixelOffset - 1, 0), new Vector2(adjustedX - 1, mapHeight));
+                DrawLine(spriteBatch, new Vector2(adjustedX - xPixelOffset, 0), new Vector2(adjustedX, mapHeight));
             }
         }
 
