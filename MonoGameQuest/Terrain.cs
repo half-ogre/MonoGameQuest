@@ -35,9 +35,9 @@ namespace MonoGameQuest
             if (coordinateOffsetY < 0)
                 coordinateOffsetY = 0;
 
-            for (var x = 0; x < Game.Display.CoordinateWidth; x++)
+            for (var x = 0; x < Game.Display.CoordinateWidth + 1; x++)
             {
-                for (var y = 0; y < Game.Display.CoordinateHeight; y++)
+                for (var y = 0; y < Game.Display.CoordinateHeight + 1; y++)
                 {
                     var xCoordinate = (float)Math.Floor(x + coordinateOffsetX);
                     var yCoordinate = (float)Math.Floor(y + coordinateOffsetY);
