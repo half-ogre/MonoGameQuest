@@ -14,7 +14,7 @@ namespace MonoGameQuest
 
         public override void Initialize()
         {
-            _sprite = new ClothArmor(Game, Vector2.Zero);
+            _sprite = new ClothArmor(Game, new Vector2(15, 222));
             Game.Components.Add(_sprite);
             
             base.Initialize();
