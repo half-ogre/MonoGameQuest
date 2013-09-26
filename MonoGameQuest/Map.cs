@@ -16,6 +16,10 @@ namespace MonoGameQuest
             CoordinateHeight = tmxMap.Height;
             CoordinateWidth = tmxMap.Width;
 
+            CoordinateTerminus = new Vector2(
+                CoordinateWidth - 1f,
+                CoordinateHeight - 1f);
+
             PixelTileHeight = tmxMap.TileHeight;
             PixelTileWidth = tmxMap.TileWidth;
             
@@ -51,7 +55,9 @@ namespace MonoGameQuest
 
         public int CoordinateHeight { get; private set; }
 
-        public int CoordinateWidth { get; private set; }        
+        public int CoordinateWidth { get; private set; }
+
+        public Vector2 CoordinateTerminus { get; set; }
 
         public Dictionary<Vector2, List<int>> Locations { get { return _locations; } }
 

@@ -168,20 +168,17 @@ namespace MonoGameQuest
             float translatedX;
             float translatedY;
 
-            var zeroBasedMapWidth = Game.Map.CoordinateWidth - 1f;
-            var zeroBasedMapHeight = Game.Map.CoordinateHeight - 1f;
-
             // adjust sprite position to center, unless the sprite is at the map's edge:
             if (CoordinatePosition.X < Game.Display.CoordinateMidpoint.X)
                 translatedX = CoordinatePosition.X;
-            else if (CoordinatePosition.X > zeroBasedMapWidth - Game.Display.CoordinateMidpoint.X)
-                translatedX = Game.Display.CoordinateTerminus.X - (zeroBasedMapWidth - CoordinatePosition.X);
+            else if (CoordinatePosition.X > Game.Map.CoordinateTerminus.X - Game.Display.CoordinateMidpoint.X)
+                translatedX = Game.Display.CoordinateTerminus.X - (Game.Map.CoordinateTerminus.X - CoordinatePosition.X);
             else
                 translatedX = Game.Display.CoordinateMidpoint.X;
             if (CoordinatePosition.Y < Game.Display.CoordinateMidpoint.Y)
                 translatedY = CoordinatePosition.Y;
-            else if (CoordinatePosition.Y > zeroBasedMapHeight - Game.Display.CoordinateMidpoint.Y)
-                translatedY = Game.Display.CoordinateTerminus.Y - (zeroBasedMapHeight - CoordinatePosition.Y);
+            else if (CoordinatePosition.Y > Game.Map.CoordinateTerminus.Y - Game.Display.CoordinateMidpoint.Y)
+                translatedY = Game.Display.CoordinateTerminus.Y - (Game.Map.CoordinateTerminus.Y - CoordinatePosition.Y);
             else
                 translatedY = Game.Display.CoordinateMidpoint.Y;
 
