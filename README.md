@@ -25,5 +25,6 @@ Pick one of the following issues and leave a comment there saying you'd like to 
 - [Display and move in an area at a time instead of the whole map](https://github.com/half-ogre/monogame-quest/issues/3)
 - [Add terrain collision detection](https://github.com/half-ogre/monogame-quest/issues/4)
 - [Add doors and portals](https://github.com/half-ogre/monogame-quest/issues/5)
+- [Make it compile and run on OS X in Xamarin Studio](https://github.com/half-ogre/MonoGameQuest/issues/11)
 
 If you'd like to help with something else, please open an issue first so we can talk about it.
