@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGameFoundation;
 
@@ -50,6 +49,9 @@ namespace MonoGameQuest
             _movement = new Stack<Action>();
             _movementLength = movementLength;
             _movementSpeed = movementSpeed;
+
+            // update the pixel position for the starting coordinate position:
+            TranslateCoordinatePositionToPixelPosition();
         }
 
         public void AddAnimation(
