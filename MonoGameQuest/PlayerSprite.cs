@@ -139,7 +139,7 @@ namespace MonoGameQuest
             if (newX < 0 || newX > Game.Map.CoordinateWidth - 1 || newY < 0 || newY > Game.Map.CoordinateHeight - 1)
                 return;
 
-            _movementTimeAtCurrentPosition = 0;
+            _movementTimeAtCurrentPosition = _movementTimeAtCurrentPosition % _movementSpeed;
             _movement.Clear();
 
             if (Orientation != direction)
