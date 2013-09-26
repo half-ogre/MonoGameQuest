@@ -47,6 +47,8 @@ namespace MonoGameQuest
 
         public Vector2 CoordinateMidpoint { get; set; }
 
+        public Vector2 CoordinateTerminus { get; set; }
+
         public int CoordinateWidth { get; private set; }
 
         public int Scale { get; private set; }
@@ -83,6 +85,10 @@ namespace MonoGameQuest
             // TODO: this assumes the display size a multiple of the tile size. Eventually we'll need to handle the offset.
             CoordinateHeight = GraphicsDevice.PresentationParameters.BackBufferHeight / (Game.Map.PixelTileHeight * Scale);
             CoordinateWidth = GraphicsDevice.PresentationParameters.BackBufferWidth / (Game.Map.PixelTileWidth * Scale);
+
+            CoordinateTerminus = new Vector2(
+                CoordinateWidth - 1f,
+                CoordinateHeight - 1f);
         }
 
         public override void Update(GameTime gameTime)

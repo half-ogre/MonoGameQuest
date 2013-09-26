@@ -168,26 +168,22 @@ namespace MonoGameQuest
             float translatedX;
             float translatedY;
 
-            var zeroBasedDisplayWidth = Game.Display.CoordinateWidth - 1f;
-            var zeroBasedDisplayHeight = Game.Display.CoordinateHeight - 1f;
-            var zeroBasedDisplayMidpointX = (Game.Display.CoordinateWidth - 1f) / 2f;
-            var zeroBasedDisplayMidpointY = (Game.Display.CoordinateHeight - 1f) / 2f;
             var zeroBasedMapWidth = Game.Map.CoordinateWidth - 1f;
             var zeroBasedMapHeight = Game.Map.CoordinateHeight - 1f;
 
             // adjust sprite position to center, unless the sprite is at the map's edge:
-            if (CoordinatePosition.X < zeroBasedDisplayMidpointX)
+            if (CoordinatePosition.X < Game.Display.CoordinateMidpoint.X)
                 translatedX = CoordinatePosition.X;
-            else if (CoordinatePosition.X > zeroBasedMapWidth - zeroBasedDisplayMidpointX)
-                translatedX = zeroBasedDisplayWidth - (zeroBasedMapWidth - CoordinatePosition.X);
+            else if (CoordinatePosition.X > zeroBasedMapWidth - Game.Display.CoordinateMidpoint.X)
+                translatedX = Game.Display.CoordinateTerminus.X - (zeroBasedMapWidth - CoordinatePosition.X);
             else
-                translatedX = zeroBasedDisplayMidpointX;
-            if (CoordinatePosition.Y < zeroBasedDisplayMidpointY)
+                translatedX = Game.Display.CoordinateMidpoint.X;
+            if (CoordinatePosition.Y < Game.Display.CoordinateMidpoint.Y)
                 translatedY = CoordinatePosition.Y;
-            else if (CoordinatePosition.Y > zeroBasedMapHeight - zeroBasedDisplayMidpointY)
-                translatedY = zeroBasedDisplayHeight - (zeroBasedMapHeight - CoordinatePosition.Y);
+            else if (CoordinatePosition.Y > zeroBasedMapHeight - Game.Display.CoordinateMidpoint.Y)
+                translatedY = Game.Display.CoordinateTerminus.Y - (zeroBasedMapHeight - CoordinatePosition.Y);
             else
-                translatedY = zeroBasedDisplayMidpointY;
+                translatedY = Game.Display.CoordinateMidpoint.Y;
 
             // adjust sprite position for the specified offset
             translatedX = (translatedX * Game.Map.PixelTileWidth) + PixelOffsetX;
