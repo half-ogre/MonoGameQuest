@@ -46,7 +46,7 @@
     </Compile>
     <Compile Include="MonoGameQuestComponent.cs" />
     <Compile Include="MonoGameQuestDrawableComponent.cs" />
-    <Compile Include="PlayerCharacter.cs" />
+    <Compile Include="Player.cs" />
     <Compile Include="PlayerSpriteAnimation.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

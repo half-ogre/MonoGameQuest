@@ -3,11 +3,11 @@ using Microsoft.Xna.Framework.Input;
 
 namespace MonoGameQuest
 {
-    public class PlayerCharacter : MonoGameQuestComponent
+    public class Player : MonoGameQuestComponent
     {
         PlayerSprite _sprite;
 
-        public PlayerCharacter(MonoGameQuest game) : base(game)
+        public Player(MonoGameQuest game) : base(game)
         {
             UpdateOrder = Constants.UpdateOrder.Models;
         }
