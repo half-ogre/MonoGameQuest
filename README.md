@@ -19,7 +19,6 @@ Want to help? Great! There's lots to do before we have even a working game.
 
 Pick one of the following issues and leave a comment there saying you'd like to work on it. I'll help you get started.
 
-- [Make the rendered part of the map move with the player's sprite](https://github.com/half-ogre/monogame-quest/issues/1)
 - [Use the mouse for movement instead of the keyboard](https://github.com/half-ogre/monogame-quest/issues/2)
 - [Display and move in an area at a time instead of the whole map](https://github.com/half-ogre/monogame-quest/issues/3)
 - [Add terrain collision detection](https://github.com/half-ogre/monogame-quest/issues/4)
