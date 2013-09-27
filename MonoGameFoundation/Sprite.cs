@@ -124,7 +124,7 @@ namespace MonoGameFoundation
         /// <summary>
         /// Gets the sprite's position in the display, in pixels.
         /// </summary>
-        public Vector2 PixelPosition { get; protected set; }
+        public Vector2 PixelPosition { get; set; }
 
         /// <summary>
         /// Gets the width of the sprite in pixels.
