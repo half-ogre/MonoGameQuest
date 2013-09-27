@@ -29,7 +29,7 @@ namespace MonoGameFoundation
             int framePixelWidth,
             int framePixelHeight,
             int framesLength,
-            int frameDuration,
+            int frameDuration = 0,
             bool flipHorizontally = false)
         {
             if (spriteSheet == null)
@@ -47,7 +47,7 @@ namespace MonoGameFoundation
             if (framesLength < 1)
                 throw new ArgumentException("Animation frames length must be greater than zero.", "framesLength");
 
-            if (frameDuration < 1)
+            if (framesLength > 1 && frameDuration < 1)
                 throw new ArgumentException("Animation frame duration must be greater than zero.", "frameDuration");
 
             _spriteSheet = spriteSheet;
