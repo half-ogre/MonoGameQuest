@@ -101,9 +101,9 @@ namespace MonoGameFoundation
         /// </remarks>
         public override void Initialize()
         {
-            SpriteBatch = new SpriteBatch(GraphicsDevice);
-
             base.Initialize();
+
+            SpriteBatch = new SpriteBatch(GraphicsDevice);
         }
 
         /// <summary>
