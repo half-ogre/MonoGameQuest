@@ -37,6 +37,9 @@
   <ItemGroup>
     <Compile Include="AnimationType.cs" />
     <Compile Include="Constants.cs" />
+    <Compile Include="Cursor.cs" />
+    <Compile Include="CursorSprite.cs" />
+    <Compile Include="CursorSprites\Hand.cs" />
     <Compile Include="DebugInfo.cs" />
     <Compile Include="Direction.cs" />
     <Compile Include="Display.cs" />

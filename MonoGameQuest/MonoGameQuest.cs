@@ -25,6 +25,7 @@ namespace MonoGameQuest
             
             Components.Add(new Terrain(this));
             Components.Add(new DebugInfo(this));
+            Components.Add(new Cursor(this));
             
             base.Initialize();
         }
