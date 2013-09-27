@@ -41,6 +41,15 @@ namespace MonoGameQuest
                 Exit();
 
             base.Update(gameTime);
+
+            var mouse = Mouse.GetState();
+            if (mouse.X < 0
+                || mouse.Y < 0
+                || mouse.X > GraphicsDevice.PresentationParameters.BackBufferWidth
+                || mouse.Y > GraphicsDevice.PresentationParameters.BackBufferHeight)
+                IsMouseVisible = true;
+            else
+                IsMouseVisible = false;
         }
     }
 }
