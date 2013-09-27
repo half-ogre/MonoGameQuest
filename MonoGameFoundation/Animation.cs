@@ -76,7 +76,7 @@ namespace MonoGameFoundation
     
             spriteBatch.Draw(
                 texture: _spriteSheet,
-                position: position * scale,
+                position: position,
                 sourceRectangle: sourceRectangle,
                 color: Color.White,
                 rotation: 0f,

@@ -190,7 +190,7 @@ namespace MonoGameQuest
 
             PixelPosition = new Vector2(
                 translatedX,
-                translatedY);
+                translatedY) * Game.Display.Scale;
         }
 
         public override void Update(GameTime gameTime)
