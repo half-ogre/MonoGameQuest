@@ -114,7 +114,7 @@ namespace MonoGameQuest
             base.LoadContent();
 
             _pixelForGrid = new Texture2D(GraphicsDevice, 1, 1);
-            _pixelForGrid.SetData(new[] { new Color(Color.Yellow.R, Color.Yellow.G, Color.Yellow.B, 32) });
+            _pixelForGrid.SetData(new[] { new Color(Color.Yellow, .5f) });
 
             _spriteFont = Game.Content.Load<SpriteFont>(@"fonts\Consolas");
         }
