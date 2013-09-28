@@ -17,6 +17,13 @@ namespace MonoGameQuest
             UpdateScale(Game.GraphicsDevice.PresentationParameters);
         }
 
+        public Vector2 CalculateCoordinateFromPixelPosition(Vector2 pixelPosition)
+        {
+            return new Vector2(
+                (int)pixelPosition.X / (Game.Map.PixelTileWidth * Scale),
+                (int)pixelPosition.Y / (Game.Map.PixelTileHeight * Scale));
+        }
+        
         public Vector2 CalculateMapCoordinate(Vector2 displayCoordinate)
         {
             UpdateMapCoordinateOffset();
