@@ -13,7 +13,8 @@
             public const int Terrain = 1;
             public const int Sprites = 2;
             public const int Debug = 3;
-            public const int Cursor = 4;
+            public const int CursorBox = 4;
+            public const int Cursor = 5;
         }
 
         public static class UpdateOrder
