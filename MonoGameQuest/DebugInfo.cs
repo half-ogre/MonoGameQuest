@@ -61,8 +61,8 @@ namespace MonoGameQuest
                 // draw the preceding row's bottom grid line:
                 DrawLine(
                     spriteBatch,
-                    start - offsetForPrecedingRowBottomGridLine,
-                    end - offsetForPrecedingRowBottomGridLine);
+                    start + offsetForPrecedingRowBottomGridLine,
+                    end + offsetForPrecedingRowBottomGridLine);
             }
 
             var offsetForPrecedingColumnRightGridLine = new Vector2(-1, 0);
