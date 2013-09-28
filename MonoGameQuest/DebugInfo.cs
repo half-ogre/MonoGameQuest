@@ -65,7 +65,7 @@ namespace MonoGameQuest
                     end + offsetForPrecedingRowBottomGridLine);
             }
 
-            var offsetForPrecedingColumnRightGridLine = new Vector2(-1, 0);
+            var offsetForLeftGridLine = new Vector2(1, 0);
             
             // draw the column grid lines:
             for (var x = 0; x <= Game.Display.CoordinateWidth; x++)
@@ -75,15 +75,15 @@ namespace MonoGameQuest
 
                 // draw the column's left grid line
                 DrawLine(
-                    spriteBatch, 
-                    start, 
-                    end);
+                    spriteBatch,
+                    start + offsetForLeftGridLine,
+                    end + offsetForLeftGridLine);
                 
                 // draw the preceding column's right grid line
                 DrawLine(
                     spriteBatch, 
-                    start - offsetForPrecedingColumnRightGridLine, 
-                    end - offsetForPrecedingColumnRightGridLine);
+                    start, 
+                    end);
             }
         }
 
