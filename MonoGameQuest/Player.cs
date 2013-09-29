@@ -9,6 +9,7 @@ namespace MonoGameQuest
     {
         bool _leftMouseButtonWasPressed;
         readonly Stack<Action> _movement;
+        Vector2? _movementNextDestination;
         int _movementTimeAtCurrentPosition;
         readonly Pathfinder _pathfinder;
         PlayerSprite _sprite;
@@ -31,7 +32,7 @@ namespace MonoGameQuest
             base.Initialize();
         }
 
-        public bool IsMoving { get { return _movement.Count > 0; } }
+        public bool IsMoving { get { return _movementNextDestination.HasValue; } }
 
         private Direction CaclulateMovementDirection(
             Vector2 origin,
@@ -56,15 +57,18 @@ namespace MonoGameQuest
             var origin = CoordinatePosition;
             
             // if the player is already traveling a path, use the path's next destination as the origin
-            if (Path.Count > 0)
-                origin = Path.Peek();
+            if (_movementNextDestination.HasValue)
+                origin = _movementNextDestination.Value;
             
             // set a new path:
             Path = _pathfinder.FindPath(origin, destination);
 
-            var firstDestination = Path.Dequeue();
-            var nextDirection = CaclulateMovementDirection(CoordinatePosition, firstDestination);
-            Move(nextDirection);   
+            if (!IsMoving)
+            {
+                var firstDestination = Path.Dequeue();
+                var nextDirection = CaclulateMovementDirection(CoordinatePosition, firstDestination);
+                Move(nextDirection);   
+            }
         }
 
         public void Move(Direction direction)
@@ -88,6 +92,8 @@ namespace MonoGameQuest
             if (newX < 0 || newX > Game.Map.CoordinateWidth - 1 || newY < 0 || newY > Game.Map.CoordinateHeight - 1)
                 return;
 
+            _movementNextDestination = new Vector2(newX, newY);
+
             _movementTimeAtCurrentPosition = _movementTimeAtCurrentPosition % Constants.DefaultMoveSpeed;
             _movement.Clear();
 
@@ -109,14 +115,19 @@ namespace MonoGameQuest
                         CoordinatePosition.X + (xDelta / Constants.DefaultMoveLength),
                         CoordinatePosition.Y + (yDelta / Constants.DefaultMoveLength));
 
-                    // if this is the last frame of movement, check the path for the next destination:
+                    // this is the last frame of movement, so we need to do some house-keeping:
                     if (frameIndex == Constants.DefaultMoveLength - 1)
                     {
+                        // clear the player's next movement destination:
+                        _movementNextDestination = null;
+
+                        // check the path for a next movement destination, and start it:
                         if (Path.Count > 0)
                         {
                             var destination = Path.Dequeue();
                             var nextDirection = CaclulateMovementDirection(CoordinatePosition, destination);
-                            Move(nextDirection);
+                            if (nextDirection != Direction.None)
+                                Move(nextDirection);
                         }
                     }
                 });
