@@ -27,8 +27,10 @@ namespace MonoGameQuest
                 4,
                 50);
 
+            _sprite.BlendState = BlendState.NonPremultiplied;
             _sprite.DrawOrder = Constants.DrawOrder.CursorBox;
             _sprite.Enabled = false;
+            _sprite.SamplerState = SamplerState.PointClamp;
             _sprite.UpdateOrder = Constants.UpdateOrder.Cursor;
             _sprite.Visible = false;
 
