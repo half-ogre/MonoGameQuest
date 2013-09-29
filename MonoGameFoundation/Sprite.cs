@@ -5,9 +5,9 @@ using Microsoft.Xna.Framework.Graphics;
 namespace MonoGameFoundation
 {
     /// <summary>
-    /// Base class for a sprite animated via a sprite sheet.
+    /// A sprite to animate via a sprite sheet.
     /// </summary>
-    public abstract class Sprite : DrawableGameComponent
+    public class Sprite : DrawableGameComponent
     {
         /// <summary>
         /// Creates a new Sprite instance.
@@ -18,7 +18,7 @@ namespace MonoGameFoundation
         /// <param name="pixelHeight">The height of the sprite in pixels.</param>
         /// <param name="pixelOffsetX">The sprite's X offset, used to to center the sprite on its location.</param>
         /// <param name="pixelOffsetY">The sprite's Y offset, used to to center the sprite on its location.</param>
-        protected Sprite(
+        public Sprite(
             Game game,
             Texture2D spriteSheet,
             int pixelWidth,
@@ -60,17 +60,25 @@ namespace MonoGameFoundation
         }
 
         /// <summary>
-        /// Calls SpriteBatch.Begin with no arguments. Override if you need to change the arguments to SpriteBatch.Begin.
+        /// Calls SpriteBatch.Begin with default arguments. Override if you need to change the arguments to SpriteBatch.Begin.
         /// </summary>
         protected virtual void BeginSpriteBatch()
         {
-            SpriteBatch.Begin();
+            SpriteBatch.Begin(SpriteSortMode.Deferred, BlendState ?? BlendState.AlphaBlend, SamplerState ?? SamplerState.LinearClamp, DepthStencilState.None, RasterizerState.CullCounterClockwise);
         }
+
+        /// <summary>
+        /// The <see cref="Microsoft.Xna.Framework.Graphics.BlendState"/> used when <see cref="Microsoft.Xna.Framework.Graphics.SpriteBatch.Begin()"/> is invoked in <see cref="BeginSpriteBatch()"/>.
+        /// </summary>
+        /// <remarks>
+        /// When null, <see cref="Microsoft.Xna.Framework.Graphics.BlendState.AlphaBlend"/> will be used.
+        /// </remarks>
+        public BlendState BlendState { get; set; }
         
         /// <summary>
         /// The sprite's current animation, which will be used to draw the sprite.
         /// </summary>
-        public Animation CurrentAnimation { get; protected set; }
+        public Animation CurrentAnimation { get; set; }
 
         /// <summary>
         /// Draws the sprite.
@@ -132,9 +140,17 @@ namespace MonoGameFoundation
         public int PixelWidth { get; protected set; }
 
         /// <summary>
+        /// The <see cref="Microsoft.Xna.Framework.Graphics.SamplerState"/> used when <see cref="Microsoft.Xna.Framework.Graphics.SpriteBatch.Begin()"/> is invoked in <see cref="BeginSpriteBatch()"/>.
+        /// </summary>
+        /// <remarks>
+        /// When null, <see cref="Microsoft.Xna.Framework.Graphics.SamplerState.LinearClamp"/> will be used.
+        /// </remarks>
+        public SamplerState SamplerState { get; set; }
+
+        /// <summary>
         /// The scale at which the sprite should be positioned and drawn.
         /// </summary>
-        public float Scale { get; protected set; }
+        public float Scale { get; set; }
 
         /// <summary>
         /// Gets or sets the SpriteBatch used to draw the sprite.
