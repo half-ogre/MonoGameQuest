@@ -141,26 +141,6 @@ namespace MonoGameQuest
             }
             _leftMouseButtonWasPressed = leftMouseButtonIsPressed;
             
-            // check for direction key presses, to move:
-            var keyboardState = Keyboard.GetState();
-
-            // if the sprite isn't already moving, accept new movement:
-            if (!IsMoving)
-            {
-                // move up:
-                if (keyboardState.IsKeyDown(Keys.Up))
-                    Move(Direction.Up);
-                // move down:
-                else if (keyboardState.IsKeyDown(Keys.Down))
-                    Move(Direction.Down);
-                // move the the left
-                else if (keyboardState.IsKeyDown(Keys.Left))
-                    Move(Direction.Left);
-                // move to the right:
-                else if (keyboardState.IsKeyDown(Keys.Right))
-                    Move(Direction.Right);   
-            }
-
             // stash IsMoving because it might change when the top of the movement stack is popped, and we need to know the value when the update started
             var wasMoving = IsMoving;
 
