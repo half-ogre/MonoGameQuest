@@ -136,7 +136,7 @@ namespace MonoGameQuest
             {
                 var mousePixelPosition = new Vector2(mouseState.X, mouseState.Y);
                 var displayCoordinate = Game.Display.CalculateCoordinateFromPixelPosition(mousePixelPosition);
-                var mapCoordinate = Game.Display.CalculateMapCoordinate(displayCoordinate);
+                var mapCoordinate = Game.Display.CalculateMapCoordinateFromDisplayCoordinate(displayCoordinate);
                 Move(mapCoordinate);
             }
             _leftMouseButtonWasPressed = leftMouseButtonIsPressed;

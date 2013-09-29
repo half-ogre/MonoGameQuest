@@ -24,7 +24,7 @@ namespace MonoGameQuest
                 (int)pixelPosition.Y / (Game.Map.PixelTileHeight * Scale));
         }
         
-        public Vector2 CalculateMapCoordinate(Vector2 displayCoordinate)
+        public Vector2 CalculateMapCoordinateFromDisplayCoordinate(Vector2 displayCoordinate)
         {
             UpdateMapCoordinateOffset();
 
