@@ -21,9 +21,9 @@ Want to help? Great! There's lots to do before we have even a working game.
 
 Pick one of the following issues and leave a comment there saying you'd like to work on it. I'll help you get started.
 
-- [Use the mouse for movement instead of the keyboard](https://github.com/half-ogre/monogame-quest/issues/2)
 - [Display and move in an area at a time instead of the whole map](https://github.com/half-ogre/monogame-quest/issues/3)
 - [Add terrain collision detection](https://github.com/half-ogre/monogame-quest/issues/4)
+- [Use BQ's A* implementation for pathfinding](https://github.com/half-ogre/MonoGameQuest/issues/13)
 - [Add doors and portals](https://github.com/half-ogre/monogame-quest/issues/5)
 - [Make it compile and run on OS X in Xamarin Studio](https://github.com/half-ogre/MonoGameQuest/issues/11)
 
