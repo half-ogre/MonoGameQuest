@@ -33,6 +33,21 @@ namespace MonoGameQuest
 
         public bool IsMoving { get { return _movement.Count > 0; } }
 
+        private Direction CaclulateMovementDirection(
+            Vector2 origin,
+            Vector2 destination)
+        {
+            if (origin.X < destination.X)
+                return Direction.Right;
+            if (origin.X > destination.X)
+                return Direction.Left;
+            if (origin.Y < destination.Y)
+                return Direction.Down;
+            if (origin.Y > destination.Y)
+                return Direction.Up;
+            return Direction.None;
+        }
+
         public Vector2 CoordinatePosition { get { return _sprite.CoordinatePosition; } }
 
         public void Move(Vector2 destination)
@@ -106,21 +121,6 @@ namespace MonoGameQuest
                     }
                 });
             }
-        }
-
-        private Direction CaclulateMovementDirection(
-            Vector2 origin, 
-            Vector2 destination)
-        {
-            if (origin.X < destination.X)
-                return Direction.Right;
-            if (origin.X > destination.X)
-                return Direction.Left;
-            if (origin.Y < destination.Y)
-                return Direction.Down;
-            if (origin.Y > destination.Y)
-                return Direction.Up;
-            return Direction.None;
         }
 
         public Direction Orientation { get; protected set; }
