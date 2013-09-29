@@ -49,6 +49,7 @@
     </Compile>
     <Compile Include="MonoGameQuestComponent.cs" />
     <Compile Include="MonoGameQuestDrawableComponent.cs" />
+    <Compile Include="Pathfinder.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="PlayerSpriteAnimation.cs" />
     <Compile Include="Program.cs" />
