@@ -29,7 +29,7 @@ namespace MonoGameQuest
                 {
                     var displayCoordinate = new Vector2(x, y);
 
-                    var mapIndex = Game.Display.CalculateMapCoordinate(displayCoordinate);
+                    var mapIndex = Game.Display.CalculateMapCoordinateFromDisplayCoordinate(displayCoordinate);
                     
                     List<int> tileIndices;
                     if (Game.Map.Locations.TryGetValue(mapIndex, out tileIndices))

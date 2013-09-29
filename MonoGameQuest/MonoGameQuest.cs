@@ -25,6 +25,8 @@ namespace MonoGameQuest
             
             Components.Add(new Terrain(this));
             Components.Add(new DebugInfo(this));
+            Components.Add(new Cursor(this));
+            Components.Add(new PathfindingBox(this));
             
             base.Initialize();
         }
@@ -41,6 +43,15 @@ namespace MonoGameQuest
                 Exit();
 
             base.Update(gameTime);
+
+            var mouse = Mouse.GetState();
+            if (mouse.X < 0
+                || mouse.Y < 0
+                || mouse.X > GraphicsDevice.PresentationParameters.BackBufferWidth
+                || mouse.Y > GraphicsDevice.PresentationParameters.BackBufferHeight)
+                IsMouseVisible = true;
+            else
+                IsMouseVisible = false;
         }
     }
 }

@@ -14,10 +14,28 @@ namespace MonoGameQuest
             Scale = 1;
             UpdateOrder = Constants.UpdateOrder.Display;
 
-            UpdateScale(GraphicsDevice.PresentationParameters);
+            UpdateScale(Game.GraphicsDevice.PresentationParameters);
         }
 
-        public Vector2 CalculateMapCoordinate(Vector2 displayCoordinate)
+        public Vector2 CalculateCoordinateFromPixelPosition(Vector2 pixelPosition)
+        {
+            return new Vector2(
+                (int)pixelPosition.X / (Game.Map.PixelTileWidth * Scale),
+                (int)pixelPosition.Y / (Game.Map.PixelTileHeight * Scale));
+        }
+
+        public Vector2 CalculateDisplayCoordinateFromMapCoordinate(Vector2 mapCoordinate)
+        {
+            UpdateMapCoordinateOffset();
+
+            Debug.Assert(_mapCoordinateOffset != null);
+
+            return new Vector2(
+                mapCoordinate.X - _mapCoordinateOffset.Value.X,
+                mapCoordinate.Y - _mapCoordinateOffset.Value.Y);
+        }
+        
+        public Vector2 CalculateMapCoordinateFromDisplayCoordinate(Vector2 displayCoordinate)
         {
             UpdateMapCoordinateOffset();
 
@@ -83,8 +101,8 @@ namespace MonoGameQuest
                 Scale = 3;
 
             // TODO: this assumes the display size a multiple of the tile size. Eventually we'll need to handle the offset.
-            CoordinateHeight = GraphicsDevice.PresentationParameters.BackBufferHeight / (Game.Map.PixelTileHeight * Scale);
-            CoordinateWidth = GraphicsDevice.PresentationParameters.BackBufferWidth / (Game.Map.PixelTileWidth * Scale);
+            CoordinateHeight = Game.GraphicsDevice.PresentationParameters.BackBufferHeight / (Game.Map.PixelTileHeight * Scale);
+            CoordinateWidth = Game.GraphicsDevice.PresentationParameters.BackBufferWidth / (Game.Map.PixelTileWidth * Scale);
 
             CoordinateMidpoint = new Vector2(
                 (CoordinateWidth - 1) / 2f,
@@ -99,7 +117,7 @@ namespace MonoGameQuest
         {
             _mapCoordinateOffset = null;
             
-            UpdateScale(GraphicsDevice.PresentationParameters);
+            UpdateScale(Game.GraphicsDevice.PresentationParameters);
         }
     }
 }

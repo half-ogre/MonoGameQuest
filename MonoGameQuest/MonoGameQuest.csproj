@@ -37,6 +37,9 @@
   <ItemGroup>
     <Compile Include="AnimationType.cs" />
     <Compile Include="Constants.cs" />
+    <Compile Include="Cursor.cs" />
+    <Compile Include="CursorSprite.cs" />
+    <Compile Include="CursorSprites\Hand.cs" />
     <Compile Include="DebugInfo.cs" />
     <Compile Include="Direction.cs" />
     <Compile Include="Display.cs" />
@@ -46,6 +49,8 @@
     </Compile>
     <Compile Include="MonoGameQuestComponent.cs" />
     <Compile Include="MonoGameQuestDrawableComponent.cs" />
+    <Compile Include="Pathfinder.cs" />
+    <Compile Include="PathfindingBox.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="PlayerSpriteAnimation.cs" />
     <Compile Include="Program.cs" />

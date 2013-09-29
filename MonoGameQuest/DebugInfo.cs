@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using MonoGameFoundation;
 
 namespace MonoGameQuest
 {
@@ -53,19 +54,19 @@ namespace MonoGameQuest
                 var end = Game.Display.CalculatePixelPosition(new Vector2(Game.Map.CoordinateWidth, y));
 
                 // draw the row's top grid line:
-                DrawLine(
-                    spriteBatch,
+                spriteBatch.DrawLine(
+                    _pixelForGrid,
                     start,
                     end);
 
                 // draw the preceding row's bottom grid line:
-                DrawLine(
-                    spriteBatch,
-                    start - offsetForPrecedingRowBottomGridLine,
-                    end - offsetForPrecedingRowBottomGridLine);
+                spriteBatch.DrawLine(
+                    _pixelForGrid,
+                    start + offsetForPrecedingRowBottomGridLine,
+                    end + offsetForPrecedingRowBottomGridLine);
             }
 
-            var offsetForPrecedingColumnRightGridLine = new Vector2(-1, 0);
+            var offsetForLeftGridLine = new Vector2(1, 0);
             
             // draw the column grid lines:
             for (var x = 0; x <= Game.Display.CoordinateWidth; x++)
@@ -74,39 +75,17 @@ namespace MonoGameQuest
                 var end = Game.Display.CalculatePixelPosition(new Vector2(x, Game.Map.CoordinateHeight));
 
                 // draw the column's left grid line
-                DrawLine(
-                    spriteBatch, 
-                    start, 
-                    end);
+                spriteBatch.DrawLine(
+                    _pixelForGrid,
+                    start + offsetForLeftGridLine,
+                    end + offsetForLeftGridLine);
                 
                 // draw the preceding column's right grid line
-                DrawLine(
-                    spriteBatch, 
-                    start - offsetForPrecedingColumnRightGridLine, 
-                    end - offsetForPrecedingColumnRightGridLine);
+                spriteBatch.DrawLine(
+                    _pixelForGrid,
+                    start, 
+                    end);
             }
-        }
-
-        void DrawLine(
-            SpriteBatch spriteBatch,
-            Vector2 start,
-            Vector2 end)
-        {
-            var edge = end - start;
-            var angle = (float)Math.Atan2(edge.Y, edge.X);
-            spriteBatch.Draw(
-                _pixelForGrid,
-                new Rectangle(
-                    (int)start.X,
-                    (int)start.Y,
-                    (int)edge.Length(),
-                    1),
-                null,
-                Color.White,
-                angle,
-                new Vector2(0, 0),
-                SpriteEffects.None,
-                0);
         }
 
         protected override void LoadContent()
@@ -114,7 +93,7 @@ namespace MonoGameQuest
             base.LoadContent();
 
             _pixelForGrid = new Texture2D(GraphicsDevice, 1, 1);
-            _pixelForGrid.SetData(new[] { new Color(Color.Yellow.R, Color.Yellow.G, Color.Yellow.B, 32) });
+            _pixelForGrid.SetData(new[] { new Color(Color.Yellow, .5f) });
 
             _spriteFont = Game.Content.Load<SpriteFont>(@"fonts\Consolas");
         }
