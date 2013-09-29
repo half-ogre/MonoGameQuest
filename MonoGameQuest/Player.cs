@@ -46,6 +46,10 @@ namespace MonoGameQuest
             
             // set a new path:
             Path = _pathfinder.FindPath(origin, destination);
+
+            var firstDestination = Path.Dequeue();
+            var nextDirection = CaclulateMovementDirection(CoordinatePosition, firstDestination);
+            Move(nextDirection);   
         }
 
         public void Move(Direction direction)
@@ -82,13 +86,41 @@ namespace MonoGameQuest
 
             for (var n = Constants.DefaultMoveLength - 1; n >= 0; n--)
             {
+                var frameIndex = n;
+
                 _movement.Push(() =>
                 {
                     _sprite.CoordinatePosition = new Vector2(
                         CoordinatePosition.X + (xDelta / Constants.DefaultMoveLength),
                         CoordinatePosition.Y + (yDelta / Constants.DefaultMoveLength));
+
+                    // if this is the last frame of movement, check the path for the next destination:
+                    if (frameIndex == Constants.DefaultMoveLength - 1)
+                    {
+                        if (Path.Count > 0)
+                        {
+                            var destination = Path.Dequeue();
+                            var nextDirection = CaclulateMovementDirection(CoordinatePosition, destination);
+                            Move(nextDirection);
+                        }
+                    }
                 });
             }
+        }
+
+        private Direction CaclulateMovementDirection(
+            Vector2 origin, 
+            Vector2 destination)
+        {
+            if (origin.X < destination.X)
+                return Direction.Right;
+            if (origin.X > destination.X)
+                return Direction.Left;
+            if (origin.Y < destination.Y)
+                return Direction.Down;
+            if (origin.Y > destination.Y)
+                return Direction.Up;
+            return Direction.None;
         }
 
         public Direction Orientation { get; protected set; }
