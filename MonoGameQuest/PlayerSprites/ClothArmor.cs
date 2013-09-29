@@ -12,9 +12,7 @@ namespace MonoGameQuest
             pixelHeight: 32, 
             pixelOffsetX: -8, 
             pixelOffsetY: -12, 
-            coordinatePosition: coordinatePosition, 
-            movementLength: Constants.DefaultMoveLength,
-            movementSpeed: Constants.DefaultMoveSpeed)
+            coordinatePosition: coordinatePosition)
         {
             AddAnimation(
                 AnimationType.Idle,
