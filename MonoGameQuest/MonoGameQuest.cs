@@ -7,7 +7,6 @@ namespace MonoGameQuest
     {
         public MonoGameQuest()
         {
-            // ReSharper disable once ObjectCreationAsStatement
             new GraphicsDeviceManager(this); /* this is needed to initialize the graphics display service */
             Content.RootDirectory = @"Content";
         }
@@ -23,7 +22,6 @@ namespace MonoGameQuest
             Player = new Player(this);
             Components.Add(Player);
             
-            Components.Add(new Terrain(this));
             Components.Add(new DebugInfo(this));
             Components.Add(new Cursor(this));
             Components.Add(new PathfindingBox(this));

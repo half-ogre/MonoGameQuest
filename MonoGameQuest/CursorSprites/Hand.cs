@@ -1,5 +1,5 @@
 ﻿using Microsoft.Xna.Framework.Graphics;
-using MonoGameFoundation;
+using MonoGameQuest.Foundation;
 
 namespace MonoGameQuest
 {

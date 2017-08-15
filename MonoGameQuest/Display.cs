@@ -14,7 +14,7 @@ namespace MonoGameQuest
             Scale = 1;
             UpdateOrder = Constants.UpdateOrder.Display;
 
-            UpdateScale(Game.GraphicsDevice.PresentationParameters);
+            //UpdateScale(Game.GraphicsDevice.PresentationParameters);
         }
 
         public Vector2 CalculateCoordinateFromPixelPosition(Vector2 pixelPosition)

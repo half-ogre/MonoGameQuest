@@ -2,7 +2,7 @@
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using MonoGameFoundation;
+using MonoGameQuest.Foundation;
 
 namespace MonoGameQuest
 {
@@ -34,8 +34,8 @@ namespace MonoGameQuest
 
             if (_showDebugInfo)
             {
-                SpriteBatch.DrawString(_spriteFont, debugInfo, new Vector2(1, 1), Color.Black, 0, Vector2.Zero, .5f, SpriteEffects.None, 0f);
-                SpriteBatch.DrawString(_spriteFont, debugInfo, new Vector2(0, 0), Color.Yellow, 0, Vector2.Zero, .5f, SpriteEffects.None, 0f);
+                SpriteBatch.DrawString(_spriteFont, debugInfo, new Vector2(1, 101), Color.Black, 0, Vector2.Zero, .5f, SpriteEffects.None, 0f);
+                SpriteBatch.DrawString(_spriteFont, debugInfo, new Vector2(0, 100), Color.Yellow, 0, Vector2.Zero, .5f, SpriteEffects.None, 0f);
             }
 
             SpriteBatch.End();

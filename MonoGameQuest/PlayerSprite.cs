@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using MonoGameFoundation;
+using MonoGameQuest.Foundation;
 
 namespace MonoGameQuest
 {
@@ -91,7 +91,7 @@ namespace MonoGameQuest
             set
             {
                 _coordinatePosition = value;
-                TranslateCoordinatePositionToPixelPosition();
+                //TranslateCoordinatePositionToPixelPosition();
             }
         }
 
@@ -139,6 +139,8 @@ namespace MonoGameQuest
             Scale = Game.Display.Scale;
 
             base.Update(gameTime);
+
+            TranslateCoordinatePositionToPixelPosition();
         }
     }
 }

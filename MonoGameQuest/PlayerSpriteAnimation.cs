@@ -1,4 +1,4 @@
-﻿using MonoGameFoundation;
+﻿using MonoGameQuest.Foundation;
 
 namespace MonoGameQuest
 {
