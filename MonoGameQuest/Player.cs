@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using System;
+using System.Collections.Generic;
 
 namespace MonoGameQuest
 {
@@ -12,6 +12,7 @@ namespace MonoGameQuest
         Vector2? _movementNextDestination;
         int _movementTimeAtCurrentPosition;
         readonly Pathfinder _pathfinder;
+        Direction? _pathInterruptingMove;
         PlayerSprite _sprite;
 
         public Player(MonoGameQuest game) : base(game)
@@ -23,16 +24,6 @@ namespace MonoGameQuest
             Path = new Queue<Vector2>();
             UpdateOrder = Constants.UpdateOrder.Models;
         }
-
-        public override void Initialize()
-        {
-            _sprite = new ClothArmor(Game, new Vector2(15, 222));
-            Game.Components.Add(_sprite);
-            
-            base.Initialize();
-        }
-
-        public bool IsMoving { get { return _movementNextDestination.HasValue; } }
 
         private Direction CaclulateMovementDirection(
             Vector2 origin,
@@ -51,6 +42,64 @@ namespace MonoGameQuest
 
         public Vector2 CoordinatePosition { get { return _sprite.CoordinatePosition; } }
 
+        private void HandleInput()
+        {
+            if (!HandleKeyboardInput())
+                HandleMouseInput();
+        }
+
+        private bool HandleKeyboardInput()
+        {
+            var keyboardState = Keyboard.GetState();
+            if (keyboardState.IsKeyDown(Keys.Left) || keyboardState.IsKeyDown(Keys.A))
+            {
+                Move(Direction.Left);
+                return true;
+            }
+            else if (keyboardState.IsKeyDown(Keys.Right) || keyboardState.IsKeyDown(Keys.D))
+            {
+                Move(Direction.Right);
+                return true;
+            }
+            else if (keyboardState.IsKeyDown(Keys.Up) || keyboardState.IsKeyDown(Keys.W))
+            {
+                Move(Direction.Up);
+                return true;
+            }
+            else if (keyboardState.IsKeyDown(Keys.Down) || keyboardState.IsKeyDown(Keys.S))
+            {
+                Move(Direction.Down);
+                return true;
+            }
+
+            return false;
+        }
+
+        private void HandleMouseInput()
+        {
+            // check for the player pressing the left mouse button, to move:
+            var mouseState = Mouse.GetState();
+            var leftMouseButtonIsPressed = mouseState.LeftButton == ButtonState.Pressed;
+            if (!leftMouseButtonIsPressed && _leftMouseButtonWasPressed)
+            {
+                var mousePixelPosition = new Vector2(mouseState.X, mouseState.Y);
+                var displayCoordinate = Game.Display.CalculateCoordinateFromPixelPosition(mousePixelPosition);
+                var mapCoordinate = Game.Display.CalculateMapCoordinateFromDisplayCoordinate(displayCoordinate);
+                Move(mapCoordinate);
+            }
+            _leftMouseButtonWasPressed = leftMouseButtonIsPressed;
+        }
+
+        public override void Initialize()
+        {
+            _sprite = new ClothArmor(Game, new Vector2(15, 222));
+            Game.Components.Add(_sprite);
+            
+            base.Initialize();
+        }
+
+        public bool IsMoving { get { return _movementNextDestination.HasValue; } }
+
         public void Move(Vector2 destination)
         {
             // if the player is not currently traveling a path, use the current coordinate position:
@@ -67,11 +116,27 @@ namespace MonoGameQuest
             {
                 var firstDestination = Path.Dequeue();
                 var nextDirection = CaclulateMovementDirection(CoordinatePosition, firstDestination);
-                Move(nextDirection);   
+                MoveOne(nextDirection);   
             }
         }
 
         public void Move(Direction direction)
+        {
+            // if already moving but not on a path, ignore the move, because we need to finish the current move first:
+            if (IsMoving && Path.Count <= 0)
+                return;
+
+            if (IsMoving && Path.Count > 0)
+            {
+                _pathInterruptingMove = direction;
+                Path.Clear();
+            } else
+            {
+                MoveOne(direction);
+            }
+        }
+
+        public void MoveOne(Direction direction)
         {
             var xDelta = 0f;
             var yDelta = 0f;
@@ -121,13 +186,20 @@ namespace MonoGameQuest
                         // clear the player's next movement destination:
                         _movementNextDestination = null;
 
+                        // check if there was a path-interrupting move:
+                        if (_pathInterruptingMove.HasValue)
+                        {
+                            var d = _pathInterruptingMove.Value;
+                            _pathInterruptingMove = null;
+                            MoveOne(d);
+                        }
                         // check the path for a next movement destination, and start it:
-                        if (Path.Count > 0)
+                        else if (Path.Count > 0)
                         {
                             var destination = Path.Dequeue();
                             var nextDirection = CaclulateMovementDirection(CoordinatePosition, destination);
                             if (nextDirection != Direction.None)
-                                Move(nextDirection);
+                                MoveOne(nextDirection);
                         }
                     }
                 });
@@ -140,18 +212,13 @@ namespace MonoGameQuest
 
         public override void Update(GameTime gameTime)
         {
-            // check for the player pressing the left mouse button, to move:
-            var mouseState = Mouse.GetState();
-            var leftMouseButtonIsPressed = mouseState.LeftButton == ButtonState.Pressed;
-            if (!leftMouseButtonIsPressed && _leftMouseButtonWasPressed)
-            {
-                var mousePixelPosition = new Vector2(mouseState.X, mouseState.Y);
-                var displayCoordinate = Game.Display.CalculateCoordinateFromPixelPosition(mousePixelPosition);
-                var mapCoordinate = Game.Display.CalculateMapCoordinateFromDisplayCoordinate(displayCoordinate);
-                Move(mapCoordinate);
-            }
-            _leftMouseButtonWasPressed = leftMouseButtonIsPressed;
-            
+            HandleInput();
+
+            UpdateMovement(gameTime);
+        }
+
+        private void UpdateMovement(GameTime gameTime)
+        {
             // stash IsMoving because it might change when the top of the movement stack is popped, and we need to know the value when the update started
             var wasMoving = IsMoving;
 

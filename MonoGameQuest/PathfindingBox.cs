@@ -1,7 +1,7 @@
-﻿using System.Linq;
-using Microsoft.Xna.Framework;
+﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using MonoGameQuest.Foundation;
+using System.Linq;
 
 namespace MonoGameQuest
 {
